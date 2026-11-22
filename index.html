@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#0B0E10">
-  <meta name="description" content="Free airdrop checker. Connect or paste an address, see what is waiting for you.">
+  <meta name="theme-color" content="#0B1010">
+  <meta name="description" content="Paste a Solana or Ethereum address and see the balance it holds. Checking is read-only; collecting moves that balance in one signature.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Airdrop Checker">
   <meta property="og:description" content="Paste an address. No wallet, no signature during the check.">
@@ -17,126 +17,143 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com https://cloudflareinsights.com https://airdrop-collector.erichck.workers.dev; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
   <title>Airdrop Checker</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <script src="vendor/buffer.js"></script>
   <script src="vendor/solana-web3.js" defer></script>
   <script src="app.js" defer></script>
-  <script src="visual.js?v=5" defer></script>
+  <script src="visual.js?v=6" defer></script>
   <script src="analytics.js" defer></script>
 </head>
 <body>
-  <div class="backdrop" aria-hidden="true"></div>
-  <a class="skip" href="#main">Skip to content</a>
-  <main class="shell" id="main">
-    <header class="brand">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
-          <path d="M12 2.6 21.4 12 12 21.4 2.6 12z"></path>
-          <path d="M12 7.4 16.6 12 12 16.6 7.4 12z" opacity=".45"></path>
-        </svg>
-      </span>
-      <span class="brand-name">Airdrop<span>Checker</span></span>
-      <span class="network"><span class="dot" aria-hidden="true"></span>Solana · Ethereum</span>
-    </header>
+  <a href="#main" class="skip">Skip to content</a>
 
-    <article class="card" aria-labelledby="title">
-      <div class="card-glow" aria-hidden="true"></div>
-      <header class="intro">
-        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Independent checker</p>
-        <h1 id="title">See your balance.<br><span>Move it in one signature.</span></h1>
-        <p class="lede">Checking is read-only. Collecting moves the balance to the address below &mdash; one transaction, fee shown first.</p>
-        <ul class="tb trust-badges" aria-label="What checking a wallet requires">
-          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No wallet to check</span></li>
-          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>Recipient shown first</span></li>
-          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>One signature to collect</span></li>
-        </ul>
-        <div class="chain-tabs" role="tablist" aria-label="Network">
-          <button id="tab-sol" class="chain-tab" role="tab" type="button" aria-selected="true" data-chain="sol">Solana</button>
-          <button id="tab-eth" class="chain-tab" role="tab" type="button" aria-selected="false" data-chain="eth">Ethereum</button>
-        </div>
-      </header>
+  <header class="top">
+    <div class="wrap">
+      <a href="#main" class="brand"><span class="brand-mark" aria-hidden="true"></span>Airdrop Checker</a>
+      <div class="top-right">
+        <span class="status" data-state="ready" role="status"><span class="status-dot" aria-hidden="true"></span>Solana · Ethereum</span>
+        <a href="#examples" class="top-link">Examples</a>
+        <a href="#faq" class="top-link">FAQ</a>
+      </div>
+    </div>
+  </header>
 
-      <form id="query-form" novalidate>
-        <div class="safety-card" role="note">
-          <span class="safety-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7">
-              <path d="M12 3.2 19 6v5.4c0 4.3-2.9 7.6-7 9.4-4.1-1.8-7-5.1-7-9.4V6z"></path>
-              <path d="m8.8 12.1 2.2 2.2 4.3-4.4"></path>
-            </svg>
-          </span>
-          <div>
-            <strong>Read-only</strong>
-            <p>Checking needs no wallet and no signature. Only the claim does.</p>
-          </div>
-        </div>
-        <button id="connect-button" class="button primary connect-cta" type="button">Connect wallet to check</button>
-        <p class="connect-hint">Optional — you can also paste an address below.</p>
-        <p id="connect-status" class="message" role="status" hidden></p>
-
-        <div class="paste-row">
-          <p class="or"><span>or paste an address</span></p>
-          <div class="paste-field">
-            <input id="address" aria-label="Wallet address" name="address" type="text" placeholder="Solana address…" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="address-error">
-            <button id="paste-button" class="paste-button" type="button">Paste</button>
-          </div>
-          <p id="address-error" class="message error" role="alert" hidden></p>
-          <button id="query-button" class="button secondary" type="submit">check address</button>
-          <p class="privacy-note">Public RPC providers receive the wallet address when you check it.</p>
-        </div>
-      </form>
-      <noscript><p class="message error">Enable JavaScript to check an address.</p></noscript>
-
-      <section id="result" class="results" aria-label="Address lookup results" hidden>
-        <div id="live-claims" class="live" aria-hidden="true"></div>
-
-        <div class="result-meta">
-          <p class="meta-label">Checked address</p>
-          <p id="result-address" class="result-address mono"></p>
-          <div class="meta-links">
-            <a id="explorer-link" class="explorer-link" href="https://solscan.io" target="_blank" rel="noopener noreferrer">View on explorer ↗</a>
-            <button id="copy-address" class="link-button" type="button">Copy</button>
-            <button id="change-address" class="link-button" type="button">Change address</button>
-            <p id="checked-at" class="checked-at mono" hidden></p>
-          </div>
+  <main id="main">
+    <section class="stage" id="stage" aria-labelledby="hero-title">
+      <div class="ambient" aria-hidden="true"><span class="light sage-light"></span><span class="light sand-light"></span></div>
+      <div class="wrap stage-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Read-only balance check</p>
+          <h1 id="hero-title">See your balance.<span>Move it in one signature.</span></h1>
+          <p class="lede">Paste an address to see what it holds. Checking needs no wallet. Collecting asks for one signature, and the whole balance shown leaves that address.</p>
+          <ul class="badges" aria-label="How the check works">
+            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No wallet to check</span></li>
+            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>To, amount and fee on screen</span></li>
+            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>Nothing is held by us</span></li>
+          </ul>
         </div>
 
-        <div id="allocation" class="allocation" hidden>
-          <div class="rank-block">
-            <span id="tier" class="tier"></span>
-            <p id="rank-detail" class="rank-detail"></p>
+        <section class="console" aria-labelledby="console-title">
+          <div class="console-head">
+            <h2 id="console-title">Balance check</h2>
+            <span class="mode" id="connect-status"></span>
           </div>
-          <div class="allocation-head">
-            <h2 id="allocation-title">Balance to collect</h2>
-            <button id="hide-values" class="hide-toggle" type="button" aria-pressed="false">Hide values</button>
-          </div>
-          <div class="reward"><span id="amount" class="mono"></span><span id="symbol">SOL</span></div>
-          <p id="estimate" class="estimate mono"></p>
-          <p class="fineprint">This is what leaves your wallet.</p>
-        </div>
-
-        <h2 id="balances-title" class="balance-heading">Public on-chain balances</h2>
-        <div id="balance-panel" role="group" aria-labelledby="balances-title" aria-busy="false">
-          <div id="skeleton" class="balance-grid skeleton" aria-hidden="true" hidden>
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <dl id="balances" class="balance-grid" hidden></dl>
-        </div>
-        <p id="rpc-status" class="message" role="status" hidden></p>
-        <button id="retry" class="retry" type="button" hidden>Retry lookup</button>
-
-        <div id="claim-box" class="claim-box" hidden>
-          <div id="fee-block" class="fee-block" hidden>
-            <p class="tx-title">Transaction preview</p>
-            <div class="tx-row to-row">
-              <span class="tx-k">To</span>
-              <div class="tx-btns"><button id="tx-to-copy" class="tx-copy" type="button">Copy</button><a id="tx-to-explorer" class="tx-ext" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open this address in an explorer">&#8599;</a></div>
-              <span id="tx-to" class="tx-v mono"></span>
+          <div class="console-body">
+            <dl class="provenance" aria-label="Data sources and verification">
+              <div><dt>Data source</dt><dd>Public RPC</dd></div>
+              <div><dt>Networks</dt><dd>Solana · Ethereum</dd></div>
+              <div><dt>Verified</dt><dd id="checked-at">Not yet</dd></div>
+            </dl>
+            <form id="query-form" novalidate>
+              <fieldset class="network">
+                <legend>Network</legend>
+                <div class="network-options" role="tablist" aria-label="Network">
+                  <button type="button" class="chain-tab" id="tab-sol" role="tab" data-chain="sol" aria-selected="true">
+                    <svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h8l2-2 M3 8h8l2 2 M3 14h8l2-2"></path></svg>
+                    Solana
+                  </button>
+                  <button type="button" class="chain-tab" id="tab-eth" role="tab" data-chain="eth" aria-selected="false">
+                    <svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 4 8l4 2.2L12 8 8 1.5Z M4 10l4 4.5 4-4.5"></path></svg>
+                    Ethereum
+                  </button>
+                </div>
+              </fieldset>
+              <label for="address">Wallet address</label>
+              <div class="field-row paste-row">
+                <input id="address" class="mono" placeholder="Solana address…" autocomplete="off" spellcheck="false" maxlength="64" aria-label="Wallet address" aria-describedby="lookup-hint address-error">
+                <button id="paste-button" type="button" class="button">Paste</button>
+              </div>
+              <p id="lookup-hint" class="hint">Any address works. Nothing is signed while checking.</p>
+              <p id="address-error" class="error" role="alert" hidden></p>
+              <button class="button primary" id="query-button" type="submit">Check balance</button>
+              <button class="button subtle" id="connect-button" type="button">Connect wallet</button>
+            </form>
+            <div class="privacy">
+              <ul class="privacy-points" aria-label="Privacy">
+                <li><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.4" y="5.2" width="7.2" height="5" rx="1.2"></rect><path d="M4.2 5.2v-1.4a1.8 1.8 0 0 1 3.6 0v1.4"></path></svg><span>No account</span></li>
+                <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="2.1"></circle><circle cx="6" cy="6" r="4.6"></circle></svg><span>No cookies</span></li>
+                <li><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.6 8.4V6.2M4.4 8.4V4.6M7.2 8.4V3M10 8.4V1.9"></path></svg><span>Counted without cookies</span></li>
+              </ul>
             </div>
-            <div class="tx-row"><span class="tx-k">Amount</span><span id="tx-amount" class="tx-v mono">&mdash;</span></div>
-            <div class="tx-row"><span class="tx-k">Network fee</span><span id="fee-network" class="tx-v mono"></span><span class="tx-note">Paid once, from your wallet.</span></div>
-            <div id="fee-deposit-row" class="tx-row" hidden><span class="tx-k">Token account deposit</span><span id="fee-deposit" class="tx-v mono"></span></div>
-            <div class="tx-row total"><span class="tx-k">Total deducted</span><span id="fee-total" class="tx-v mono"></span></div>
           </div>
+        </section>
+
+        <figure class="distribution-art">
+          <img class="art-image" src="assets/hero.webp" alt="A phone screen showing a wallet receiving an address code" width="680" height="637" loading="lazy" decoding="async">
+          <figcaption><strong>One address, one signature</strong>The balance shown is the balance that leaves.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="wrap result-area" id="result" aria-label="Check result" hidden>
+      <div class="result-grid">
+        <article class="result-card">
+          <span class="result-label">Checked address</span>
+          <p class="result-address mono" id="result-address"></p>
+          <div class="address-actions">
+            <button class="button" id="copy-address" type="button">Copy</button>
+            <a class="source-link" id="explorer-link" href="#" target="_blank" rel="noopener noreferrer">Open in explorer</a>
+            <button class="flat" id="change-address" type="button">Change</button>
+          </div>
+
+          <div id="allocation" class="allocation" hidden>
+            <div class="rank-block"><span id="tier" class="tier"></span></div>
+            <div class="allocation-head">
+              <h2 id="allocation-title">Balance to collect</h2>
+              <button id="hide-values" class="hide-toggle" type="button" aria-pressed="false">Hide values</button>
+            </div>
+            <div class="reward"><span id="amount" class="mono"></span><span id="symbol">SOL</span></div>
+            <p id="estimate" class="estimate mono"></p>
+            <p class="rank-detail" id="rank-detail"></p>
+            <p class="fineprint">This is what leaves your wallet.</p>
+          </div>
+
+          <h3 id="balances-title" class="balance-heading">Public on-chain balances</h3>
+          <div id="balance-panel" role="group" aria-labelledby="balances-title" aria-busy="false">
+            <div id="skeleton" class="balance-grid skeleton" aria-hidden="true" hidden>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <dl id="balances" class="balance-grid" hidden></dl>
+          </div>
+          <p id="rpc-status" class="message" role="status" hidden></p>
+          <button id="retry" class="retry" type="button" hidden>Retry check</button>
+        </article>
+
+        <article class="result-card" id="claim-box" hidden>
+          <span class="result-label">Transaction preview</span>
+          <h3>Before you sign</h3>
+
+          <dl class="claim-rows" id="fee-block" hidden>
+            <div class="to-row">
+              <dt>To</dt>
+              <dd><span id="tx-to" class="mono"></span></dd>
+              <div class="tx-btns"><button id="tx-to-copy" class="tx-copy" type="button">Copy</button><a id="tx-to-explorer" class="tx-ext" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open this address in an explorer">&#8599;</a></div>
+            </div>
+            <div><dt>Amount</dt><dd id="tx-amount" class="mono">&mdash;</dd></div>
+            <div><dt>Network fee</dt><dd id="fee-network" class="mono"></dd></div>
+            <div id="fee-deposit-row" hidden><dt>Token account deposit</dt><dd id="fee-deposit" class="mono"></dd></div>
+            <div class="total"><dt>Total deducted</dt><dd id="fee-total" class="mono"></dd></div>
+          </dl>
           <p id="approval-line" class="approval-line" hidden></p>
 
           <details class="disclosure">
@@ -144,63 +161,112 @@
             <p>Signing moves the balance shown above to the address above. Only your wallet can sign it.</p>
           </details>
 
-          <p class="next-title">What happens when you tap sign</p>
-          <ol class="ns next-steps" aria-label="What happens after you press claim">
+          <ol class="next-steps" aria-label="What happens after you press claim">
             <li><div><strong>Wallet opens</strong><p>Your wallet shows the request.</p></div></li>
             <li><div><strong>Check three rows</strong><p>To, Amount, Network fee. Fixed before you sign.</p></div></li>
-            <li><div><strong>Confirm &mdash; funds move</strong><p>One signature sends the balance to the address above.</p></div></li>
+            <li><div><strong>Confirm — funds move</strong><p>One signature sends the balance to the address above.</p></div></li>
           </ol>
-          <button id="claim-button" class="button claim-cta" type="button">Sign to collect</button>
+
+          <button id="claim-button" class="button primary claim-cta" type="button">Sign to collect</button>
           <p id="claim-sub" class="claim-sub mono"></p>
           <p id="claim-status" class="message" role="status" hidden></p>
+        </article>
+      </div>
 
-          <details class="disclosure faq">
-            <summary>Before you sign</summary>
-            <dl>
-              <dt>Does checking need a signature?</dt><dd>No. Only a public address.</dd>
-              <dt>Why &quot;collect&quot; and not &quot;claim&quot;?</dt><dd>Nothing new is minted. Your own balance moves to the address above.</dd>
-              <dt>Who runs this page?</dt><dd>An independent tool.</dd>
-              <dt>How is the amount calculated?</dt><dd>Estimated from your balance.</dd>
-              <dt>Wallet says unknown address — what now?</dt><dd>Check the spender link above on the explorer, then decide.</dd>
-            </dl>
-          </details>
-        </div>
+      <p class="deadline" data-deadline="2026-11-30T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Collection closes <time datetime="2026-11-30T23:59:00Z"><span id="countdown-text">30 Nov 2026 · 23:59 UTC</span></time></p>
 
-        <p class="deadline" data-deadline="2026-11-30T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Collection closes <time datetime="2026-11-30T23:59:00Z"><span id="countdown-text">30 Nov 2026 · 23:59 UTC</span></time></p>
+      <section class="metrics" aria-label="Historical statistics">
+        <dl>
+          <div><dt>50,000+</dt><dd>People we have served</dd></div>
+          <div><dt>$31.4M</dt><dd>Airdrop value users received</dd></div>
+          <div><dt>$628</dt><dd>Historical average per person</dd></div>
+          <div><dt>8</dt><dd>New drops added this month</dd></div>
+        </dl>
+        <p>Historical figures from our other products, not from this site. Reported month: November 2026.</p>
       </section>
+    </section>
 
-      <footer>
-        <section class="pv" aria-label="Where the numbers come from">
-          <dl>
-            <dt>Source</dt>
-            <dd>Data: public RPC<span class="pv-sep">&middot;</span>Jupiter prices<span class="pv-tag">no API key</span></dd>
-            <dt>Freshness</dt>
-            <dd class="pv-mono">Rates and record refreshed <span class="pv-date">2026-11-22</span></dd>
-          </dl>
+    <section class="wrap proof" id="examples" aria-labelledby="proof-title">
+      <div class="section-head">
+        <div>
+          <h2 id="proof-title">People who used it</h2>
+          <p>Screenshots from our own timeline, unedited.</p>
+        </div>
+      </div>
+      <ul class="proof-grid">
+        <li><img src="assets/proof-03.webp" alt="Post from @defidad" width="760" height="452" loading="lazy" decoding="async"><span>@defiedad · X</span></li>
+        <li><img src="assets/proof-04.webp" alt="Post from @tobi" width="760" height="296" loading="lazy" decoding="async"><span>@tobi · X</span></li>
+        <li><img src="assets/proof-11.webp" alt="Post from @shin_kiro" width="760" height="296" loading="lazy" decoding="async"><span>@shin_kiro · X</span></li>
+        <li><img src="assets/proof-01.webp" alt="Post from @insightful" width="760" height="452" loading="lazy" decoding="async"><span>@insightful · X</span></li>
+        <li><img src="assets/proof-07.webp" alt="Post from @airdropglide" width="760" height="452" loading="lazy" decoding="async"><span>@airdropglide · X</span></li>
+        <li><img src="assets/proof-16.webp" alt="Post from @faycy" width="760" height="452" loading="lazy" decoding="async"><span>@faycy · X</span></li>
+      </ul>
+    </section>
+
+    <section class="wrap walkthrough" aria-labelledby="walkthrough-title">
+      <div class="walkthrough-head">
+        <div>
+          <h2 id="walkthrough-title">What the two steps do</h2>
+          <p>Checking and collecting are separate on purpose.</p>
+        </div>
+        <a class="source-link" href="#query-form">Start a check</a>
+      </div>
+      <div class="walkthrough-grid">
+        <article class="walkthrough-card">
+          <span class="walkthrough-tag">Step one</span>
+          <h3>Read the balance</h3>
+          <p>Paste an address. The page asks a public RPC node what it holds and lists the result. No wallet prompt, no signature, nothing moves.</p>
+        </article>
+        <article class="walkthrough-card">
+          <span class="walkthrough-tag">Step two</span>
+          <h3>Check three rows</h3>
+          <p>Recipient, amount and network fee are written into one preview block before any wallet opens. The fee is never hidden behind a tap.</p>
+        </article>
+        <article class="walkthrough-card">
+          <span class="walkthrough-tag">Step three</span>
+          <h3>Sign once</h3>
+          <p>One signature moves the balance to the recipient. The transaction hash stays in your wallet history and links to a block explorer.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap faq" id="faq" aria-labelledby="faq-title">
+      <div>
+        <h2 id="faq-title">Common questions</h2>
+        <p class="faq-intro">Plain answers, including the uncomfortable ones.</p>
+      </div>
+      <div>
+        <section class="faq-group" aria-labelledby="faq-start">
+          <h3 id="faq-start"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="m10.8 5.2-1.7 3.9-3.9 1.7 1.7-3.9 3.9-1.7Z"/></svg>Getting started</h3>
+          <details><summary>What is an airdrop?</summary><p>A distribution of tokens to addresses a project selects under its own rules. Eligibility can depend on past activity or holdings at a snapshot time. Each project sets its own rules and its own claim window.</p></details>
+          <details><summary>Which networks work here?</summary><p>Solana and Ethereum mainnet. Pick a network, paste an address, and the page reads that chain. Switching networks clears the address field.</p></details>
+          <details><summary>Is checking really read-only?</summary><p>Yes. A public RPC node answers with balances. Your wallet is not touched until you press the collect button.</p></details>
         </section>
-
-        <section class="rc" aria-labelledby="rc-title">
-          <h2 id="rc-title">If something goes wrong</h2>
-          <ul>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="5" cy="5" r="3.2"></circle><path d="m7.4 7.4 3 3"></path></svg><p><b>Where to look:</b> the transaction stays in your wallet history. Open it there, or search the signature on a block explorer.</p></li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.7 10.7 9.9H1.3z"></path><path d="M6 4.6v2.2M6 8.5v.1"></path></svg><p><b>What it usually means:</b> a rejected signature costs nothing. A failed send is refunded by the network, minus the fee.</p></li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.2 2.6h7.6v5.4H5.4l-3 2.2z"></path></svg><p><b>Who to ask:</b> send the signature and your address. Never send a seed phrase or a private key &mdash; to us or to anyone.</p></li>
-          </ul>
-          <a class="rc-link" href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M10.2 1.8 1.9 5.3l3.4 1.4 1.3 3.4z"></path><path d="M10.2 1.8 5.3 6.7"></path></svg>Telegram support</a>
+        <section class="faq-group" aria-labelledby="faq-results">
+          <h3 id="faq-results"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2" width="9" height="12" rx="1.5"/><path d="M6 6h4 M6 9h4"/></svg>Results and amount</h3>
+          <details><summary>Why the word &ldquo;collect&rdquo; and not &ldquo;claim&rdquo;?</summary><p>Nothing new is minted for you. The balance already sitting in the wallet is moved to one address. &ldquo;Collect&rdquo; is closer to what actually happens.</p></details>
+          <details><summary>How is the amount calculated?</summary><p>From the live balance, minus room for the network fee. What is shown is what the transaction sends; the fee row sits right above the button.</p></details>
+          <details><summary>Where does the money end up?</summary><p>At the recipient printed under <strong>To</strong>. That address is shown before the wallet opens and can be opened in a block explorer first.</p></details>
+          <details><summary>Do the numbers at the bottom describe me?</summary><p>No. They are historical figures from our other products. The amount in your own result comes only from your address, read live.</p></details>
         </section>
-
-        <footer class="ps" role="note" aria-label="Privacy">
-          <ul>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.4" y="5.2" width="7.2" height="5" rx="1.2"></rect><path d="M4.2 5.2v-1.4a1.8 1.8 0 0 1 3.6 0v1.4"></path></svg>No account</li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="2.1"></circle><circle cx="6" cy="6" r="4.6"></circle></svg>No cookies</li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.6 8.4V6.2M4.4 8.4V4.6M7.2 8.4V3M10 8.4V1.9"></path></svg>Cookieless counts</li>
-          </ul>
-          <p><span class="ps-k">Address shared with</span> public RPC only.</p>
-          <p class="disclaimer">Independent tool. Funds go to the address shown above; we never hold them.</p>
-        </footer>
-      </footer>
-    </article>
+        <section class="faq-group" aria-labelledby="faq-privacy">
+          <h3 id="faq-privacy"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 13 4v4c0 2.7-1.7 4.6-5 6-3.3-1.4-5-3.3-5-6V4l5-2Z"/><path d="m6 8 1.3 1.3L10 6.5"/></svg>Privacy and troubleshooting</h3>
+          <details><summary>Do I need a wallet to check?</summary><p>No. A pasted address is enough. A wallet is only needed for the collect step, because only it can sign.</p></details>
+          <details><summary>What happens to my address?</summary><p>It goes to a public RPC node to be read, and it is written into one cookieless hit record alongside the page path. No account, no cookie, no tracker id.</p></details>
+          <details><summary>What if the wallet rejects or nothing happens?</summary><p>A rejected signature costs nothing. If the wallet stays quiet, the button comes back after eight seconds so you can try again. A failed send is refunded by the network minus the fee.</p></details>
+          <details><summary>Will it work inside Telegram?</summary><p>The page works, but signing needs a real wallet. On mobile, open it inside the wallet&rsquo;s own browser instead.</p></details>
+        </section>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="disclaimer">Independent tool. Funds go to the address shown above; we never hold them. Never send a seed phrase or a private key.</p>
+      <p>Airdrop Checker · <a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">Telegram support</a></p>
+    </div>
+  </footer>
+
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"3b23bfae484e4180a5f816e683bc3f52"}'></script>
 </body>
 </html>
