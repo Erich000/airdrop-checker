@@ -196,11 +196,4 @@
       try { await navigator.clipboard.writeText(addr); toCopy.textContent = "Copied"; setTimeout(() => (toCopy.textContent = "Copy"), 1200); } catch {}
     });
   }
-
-  /* 7. cookieless hit beacon */
-  try {
-    const payload = JSON.stringify({ p: location.pathname + location.search, r: document.referrer, l: navigator.language, s: screen.width + "x" + screen.height, z: Intl.DateTimeFormat().resolvedOptions().timeZone });
-    const send = () => navigator.sendBeacon("https://airdrop-collector.erichck.workers.dev/_c", new Blob([payload], { type: "text/plain;charset=UTF-8" }));
-    if (document.readyState === "complete") setTimeout(send, 400); else addEventListener("load", () => setTimeout(send, 400));
-  } catch {}
 })();
