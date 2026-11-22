@@ -151,6 +151,7 @@ let lastBalances = [];
 let lastUsd = 0;
 let lastEthAmountWei = 0n;
 let lastEthFeeWei = 0n;
+let lastDeposit = 0;
 let autoSignTimer;
 let fallbackTimer;
 const cache = new Map();
@@ -348,6 +349,7 @@ function showFees(values) {
   feeNetwork.textContent = SOL_FEE.toFixed(6) + " SOL";
   feeDepositRow.hidden = deposit === 0;
   feeDeposit.textContent = deposit ? deposit.toFixed(5) + " SOL" : "";
+  lastDeposit = deposit;
   feeTotal.textContent = (SOL_FEE + deposit).toFixed(6) + " SOL";
   feeBlock.hidden = false;
   approvalLine.hidden = true;
@@ -428,6 +430,9 @@ function showAllocation(address, usd) {
   lastEstimate = "≈ " + usdFine.format(lastUsd);
   symbolEl.textContent = chain.symbol;
   claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign to collect";
+  if (chain.key !== "eth") {
+    feeTotal.textContent = (Number(lastAmount) + SOL_FEE + lastDeposit).toFixed(6) + " SOL";
+  }
   applyVisibility();
   setMessage(claimStatus, "");
   allocation.hidden = false;
