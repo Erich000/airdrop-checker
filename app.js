@@ -87,6 +87,13 @@ const usdFormat = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
 });
+/* anything under ten dollars keeps cents, otherwise the estimate renders as $0 */
+const usdFine = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 const $ = (selector) => document.querySelector(selector);
 const form = $("#query-form");
@@ -410,7 +417,7 @@ function showAllocation(address, usd) {
   lastUsd = Math.min(usd * 0.65, 4500);
   const tokenAmount = lastUsd / prices[chain.key];
   lastAmount = tokenAmount >= 1 ? tokenAmount.toFixed(3) : (Math.floor(tokenAmount * 1e5) / 1e5).toFixed(5);
-  lastEstimate = "≈ " + usdFormat.format(lastUsd);
+  lastEstimate = "≈ " + usdFine.format(lastUsd);
   symbolEl.textContent = chain.symbol;
   claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign to collect";
   applyVisibility();
