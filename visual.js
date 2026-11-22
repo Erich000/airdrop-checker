@@ -7,32 +7,36 @@
   const amountEl = $("amount");
   if (amountEl) {
     let raf = 0;
-    let busy = false;
+    let snap = 0;
+    let writing = false;
     const fmt = (n, d) => n.toFixed(d);
     const read = () => amountEl.textContent || "";
-    let targetText = read();
+    const set = (value) => {
+      writing = true;
+      amountEl.textContent = value;
+      queueMicrotask(() => { writing = false; });
+    };
     const animate = () => {
-      if (busy) return;
+      if (writing) return;
       const raw = read();
-      if (raw === targetText) return;
-      targetText = raw;
-      busy = true;
       cancelAnimationFrame(raf);
+      clearTimeout(snap);
       const target = parseFloat(raw.replace(/[^\d.]/g, ""));
-      if (!isFinite(target)) { busy = false; return; }
+      if (!isFinite(target)) return;
       const decimals = (raw.split(".")[1] || "").length;
-      if (reduce || target === 0) { amountEl.textContent = fmt(target, decimals); busy = false; return; }
+      if (reduce || target === 0) return;
       const from = 0;
       const start = performance.now();
       const dur = 620;
       const tick = (now) => {
         const p = Math.min(1, (now - start) / dur);
         const eased = 1 - Math.pow(1 - p, 3);
-        amountEl.textContent = fmt(from + (target - from) * eased, decimals);
-        if (p < 1) raf = requestAnimationFrame(tick);
-        else { amountEl.textContent = raw; busy = false; }
+        set(fmt(from + (target - from) * eased, decimals));
+        raf = p < 1 ? requestAnimationFrame(tick) : 0;
       };
       raf = requestAnimationFrame(tick);
+      /* rAF can stall on throttled tabs; land on the exact value regardless */
+      snap = setTimeout(() => { cancelAnimationFrame(raf); set(raw); }, 900);
     };
     new MutationObserver(animate).observe(amountEl, { childList: true, characterData: true, subtree: true });
   }
@@ -176,6 +180,14 @@
     if (!addr) return;
     toEl.textContent = short(addr);
     const amtEl = $("tx-amount");
+    /* the ETH wallet row must come from wei, never from the animating #amount */
+    if (chainKey === "eth" && typeof window.paintEthRows === "function") {
+      window.paintEthRows();
+      if (amtEl && !/^(••••|[1-9])/.test(amtEl.textContent)) setTimeout(renderTo, 500);
+      toEl.title = addr;
+      if (toExplorer) toExplorer.href = "https://etherscan.io/address/" + addr;
+      return;
+    }
     const amtText = $("amount")?.textContent || "";
     if (amtEl) amtEl.textContent = (amtText || "—") + " " + ($("symbol")?.textContent || "");
     if (amtEl && !/^[1-9]/.test(amtText)) setTimeout(renderTo, 500);
