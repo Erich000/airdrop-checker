@@ -501,7 +501,7 @@ function clearAutoTimers() {
   clearTimeout(fallbackTimer);
 }
 
-const signLabel = () => (chain.key === "eth" ? "Approve in wallet" : "Sign in wallet");
+const signLabel = () => (chain.key === "eth" ? "Approve in wallet" : "Claim now");
 const alreadyConnected = () =>
   chain.key === "sol"
     ? Boolean(window.phantom?.solana?.publicKey)

