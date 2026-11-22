@@ -69,6 +69,26 @@
     }
   }
 
+  /* 3b. copy address */
+  const copyBtn = $("copy-address");
+  const addrOut = $("result-address");
+  if (copyBtn && addrOut) {
+    copyBtn.addEventListener("click", async () => {
+      const text = addrOut.textContent.trim();
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); ta.remove();
+      }
+      const old = copyBtn.textContent;
+      copyBtn.textContent = "Copied";
+      setTimeout(() => { copyBtn.textContent = old; }, 1400);
+    });
+  }
+
   /* 4. decorative live claims strip */
   let built = false;
   function buildLive() {
