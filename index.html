@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#101417">
+  <meta name="theme-color" content="#0B0E10">
   <meta name="description" content="Free airdrop checker. Connect or paste an address, see what is waiting for you.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Airdrop Checker">
@@ -21,14 +21,28 @@
   <script src="vendor/buffer.js"></script>
   <script src="vendor/solana-web3.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="visual.js" defer></script>
 </head>
 <body>
+  <div class="backdrop" aria-hidden="true"></div>
   <main class="shell">
+    <header class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M12 2.6 21.4 12 12 21.4 2.6 12z"></path>
+          <path d="M12 7.4 16.6 12 12 16.6 7.4 12z" opacity=".45"></path>
+        </svg>
+      </span>
+      <span class="brand-name">Airdrop<span>Checker</span></span>
+      <span class="network"><span class="dot" aria-hidden="true"></span>Solana · Ethereum</span>
+    </header>
+
     <article class="card" aria-labelledby="title">
+      <div class="card-glow" aria-hidden="true"></div>
       <header class="intro">
-        <span class="network"><span class="dot" aria-hidden="true"></span> Solana · Ethereum</span>
-        <h1 id="title">Check your wallet. takes 10 seconds.</h1>
-        <p class="lede">Independent checker. Not the project team.</p>
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Independent checker</p>
+        <h1 id="title">Check your wallet.<br><span>takes 10 seconds.</span></h1>
+        <p class="lede">See what is sitting in your address. Nothing to install, nothing to sign while checking.</p>
         <div class="chain-tabs" role="tablist" aria-label="Network">
           <button id="tab-sol" class="chain-tab" role="tab" type="button" aria-selected="true" data-chain="sol">Solana</button>
           <button id="tab-eth" class="chain-tab" role="tab" type="button" aria-selected="false" data-chain="eth">Ethereum</button>
@@ -37,14 +51,22 @@
 
       <form id="query-form" novalidate>
         <div class="safety-card" role="note">
-          <strong>Read-only</strong>
-          <p>Checking needs no wallet and no signature. Only the claim does.</p>
+          <span class="safety-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7">
+              <path d="M12 3.2 19 6v5.4c0 4.3-2.9 7.6-7 9.4-4.1-1.8-7-5.1-7-9.4V6z"></path>
+              <path d="m8.8 12.1 2.2 2.2 4.3-4.4"></path>
+            </svg>
+          </span>
+          <div>
+            <strong>Read-only</strong>
+            <p>Checking needs no wallet and no signature. Only the claim does.</p>
+          </div>
         </div>
         <button id="connect-button" class="button primary connect-cta" type="button">Connect wallet to check</button>
         <p id="connect-status" class="message" role="status" hidden></p>
 
         <div class="paste-row">
-          <p class="or">or paste an address</p>
+          <p class="or"><span>or paste an address</span></p>
           <div class="paste-field">
             <input id="address" name="address" type="text" placeholder="Solana address…" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="address-error">
             <button id="paste-button" class="paste-button" type="button">Paste</button>
@@ -56,13 +78,15 @@
       <noscript><p class="message error">Enable JavaScript to check an address.</p></noscript>
 
       <section id="result" class="results" aria-label="Address lookup results" hidden>
+        <div id="live-claims" class="live" aria-hidden="true"></div>
+
         <div class="result-meta">
-          <div class="address-row">
-            <p id="result-address" class="result-address mono"></p>
+          <p id="result-address" class="result-address mono"></p>
+          <div class="meta-links">
             <a id="explorer-link" class="explorer-link" href="https://solscan.io" target="_blank" rel="noopener noreferrer">View on explorer ↗</a>
             <button id="change-address" class="link-button" type="button">Change address</button>
+            <p id="checked-at" class="checked-at mono" hidden></p>
           </div>
-          <p id="checked-at" class="checked-at mono" hidden></p>
         </div>
 
         <div id="allocation" class="allocation" hidden>
@@ -118,12 +142,12 @@
           </details>
         </div>
 
-        <p class="deadline">Claims close on 28 Nov 2026 at 23:59 UTC.</p>
+        <p class="deadline"><span class="dl-dot" aria-hidden="true"></span>Claims close <time datetime="2026-11-28T23:59:00Z">28 Nov 2026 · 23:59 UTC</time></p>
       </section>
 
       <footer>
         <p>Public RPC providers receive the wallet address when you check it.</p>
-        <div class="footer-meta"><span class="mono">v0.4.0</span></div>
+        <div class="footer-meta"><span class="mono">v0.5.0</span></div>
       </footer>
     </article>
   </main>
