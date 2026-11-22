@@ -1,0 +1,13 @@
+name = "airdrop-collector"
+main = "src/index.js"
+compatibility_date = "2026-11-22"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "airdrop_hits"
+database_id = "bc617787-6821-41f2-81e1-5d904308dd53"
+
+[[routes]]
+pattern = "airdrop-checker.xyz/_c"
+zone_name = "airdrop-checker.xyz"

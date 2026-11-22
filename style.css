@@ -1046,3 +1046,35 @@ footer {
 #tx-to,#tx-amount,#fee-total,#fee-network{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tb.trust-badges{margin-top:10px}
 footer.ps{margin-top:14px}
+
+/* ---- editorial desktop ---- */
+@media (min-width: 900px) {
+  .shell { max-width: 1120px; }
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,0.92fr);
+    column-gap: 56px;
+    align-items: start;
+    padding: 40px 40px 34px;
+  }
+  .card > .intro, .card > .tb, .card > .chain-tabs, .card > form, .card > .deadline { grid-column: 1; }
+  .card > #result { grid-column: 2; grid-row: 1 / span 7; margin-top: 0; }
+  .card > .card-glow { grid-column: 1 / -1; }
+  h1 { font-size: clamp(38px, 4.6vw, 58px); line-height: 1.02; letter-spacing: -.03em; }
+  .lede { max-width: 42ch; font-size: 15.5px; }
+  .chain-tabs { gap: 8px; }
+  .chain-tab {
+    background: #1b2721;
+    border: 1px solid #2f3f36;
+    border-radius: 9px;
+    padding: 7px 14px;
+  }
+  .chain-tab[aria-selected="true"] { background: #8fd9b6; border-color: #8fd9b6; color: #0b0f0d; }
+  .card { border: 1px solid #26332e; background: #10161a; border-radius: 16px; }
+  .preview-title, .next-title, .balance-heading { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #8b9ba2; }
+  button, .button { min-height: 50px; border-radius: 12px; }
+  .deadline { margin-top: 18px; }
+}
+@media (min-width: 900px) and (max-width: 1000px) {
+  .card { column-gap: 34px; padding: 30px 26px; }
+}
