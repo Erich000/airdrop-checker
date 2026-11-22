@@ -89,6 +89,25 @@
     });
   }
 
+  /* 3c. humanise sub-cent estimates */
+  const fix = (el) => {
+    if (!el) return;
+    const t = el.textContent;
+    const m = t.match(/[$]0(?:\.0+)?(?!\d)/);
+    if (m && t.trim()) {
+      const next = t.replace(m[0], "<$0.01");
+      if (next !== t && !el.dataset.fixed) {
+        el.dataset.fixed = "1";
+        el.textContent = next;
+        setTimeout(() => { el.dataset.fixed = ""; }, 900);
+      }
+    }
+  };
+  ["estimate", "claim-sub"].forEach((id) => {
+    const el = $(id);
+    if (el) new MutationObserver(() => fix(el)).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
   /* 4. decorative live claims strip */
   let built = false;
   function buildLive() {
