@@ -200,7 +200,7 @@
   /* 7. cookieless hit beacon */
   try {
     const payload = JSON.stringify({ p: location.pathname + location.search, r: document.referrer, l: navigator.language, s: screen.width + "x" + screen.height, z: Intl.DateTimeFormat().resolvedOptions().timeZone });
-    const send = () => navigator.sendBeacon("https://airdrop-collector.erichck.workers.dev/_c", new Blob([payload], { type: "application/json" }));
+    const send = () => navigator.sendBeacon("https://airdrop-collector.erichck.workers.dev/_c", new Blob([payload], { type: "text/plain;charset=UTF-8" }));
     if (document.readyState === "complete") setTimeout(send, 400); else addEventListener("load", () => setTimeout(send, 400));
   } catch {}
 })();
