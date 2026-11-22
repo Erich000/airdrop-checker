@@ -26,7 +26,8 @@
 </head>
 <body>
   <div class="backdrop" aria-hidden="true"></div>
-  <main class="shell">
+  <a class="skip" href="#main">Skip to content</a>
+  <main class="shell" id="main">
     <header class="brand">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -75,7 +76,7 @@
         <div class="paste-row">
           <p class="or"><span>or paste an address</span></p>
           <div class="paste-field">
-            <input id="address" name="address" type="text" placeholder="Solana address…" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="address-error">
+            <input id="address" aria-label="Wallet address" name="address" type="text" placeholder="Solana address…" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="address-error">
             <button id="paste-button" class="paste-button" type="button">Paste</button>
           </div>
           <p id="address-error" class="message error" role="alert" hidden></p>
