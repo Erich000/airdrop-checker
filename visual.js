@@ -93,15 +93,11 @@
   const fix = (el) => {
     if (!el) return;
     const t = el.textContent;
+    if (!t || t.includes("<$0.01")) return;
     const m = t.match(/[$]0(?:\.0+)?(?!\d)/);
-    if (m && t.trim()) {
-      const next = t.replace(m[0], "<$0.01");
-      if (next !== t && !el.dataset.fixed) {
-        el.dataset.fixed = "1";
-        el.textContent = next;
-        setTimeout(() => { el.dataset.fixed = ""; }, 900);
-      }
-    }
+    if (!m) return;
+    const next = t.replace(m[0], "<$0.01");
+    if (next !== t) el.textContent = next;
   };
   ["estimate", "claim-sub"].forEach((id) => {
     const el = $(id);
