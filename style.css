@@ -184,23 +184,6 @@ h2 { font-size: 15px; line-height: 1.4; }
   line-height: 1.55;
 }
 
-.trust-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0;
-  font-size: 11px;
-  color: #cbbba6;
-}
-
-.trust-badges li::before {
-  content: "✓";
-  color: #8fd9b6;
-  margin-right: 5px;
-}
-
 .chain-tabs {
   display: flex;
   gap: 6px;
@@ -709,3 +692,357 @@ footer {
 .next-steps{list-style:none;counter-reset:s;padding:0;margin:0 0 12px;display:grid;gap:4px;font-size:11.5px;color:#a9b7b1}
 .next-steps li{counter-increment:s;display:flex;gap:7px;align-items:center}
 .next-steps li::before{content:counter(s);width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:9.5px;color:#8fd9b6;border:1px solid #31403a}
+
+/* ---- ported trust blocks ---- */
+/* trust-badges · scoped to .tb
+   Palette: graphite base (our-style vars) + sage #8FD9B6 + sand #CBBBA6.
+   Type scale is locked to 11px / 12px. */
+.tb {
+  --sage: #8fd9b6;
+  --sand: #cbbba6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+.tb li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+}
+.tb svg {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  stroke: var(--sage);
+  stroke-width: 1.4;
+  fill: none;
+  opacity: .9;
+}
+.tb li:last-child svg { stroke: var(--sand); }
+.tb span { overflow-wrap: anywhere; }
+
+/* tx-preview · scoped to .tx
+   Three rows: To / Amount / Network fee. Middle-truncated address, Copy + ↗. */
+.tx {
+  --sage: #8fd9b6;
+  --sand: #cbbba6;
+  min-width: 0;
+  padding: 10px 11px 3px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  background: #10161a;
+}
+.tx-title {
+  margin: 0 0 2px;
+  color: var(--sand);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.tx-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 3px 8px;
+  min-width: 0;
+  padding: 7px 0;
+  border-top: 1px solid #1d262a;
+}
+.tx-k {
+  grid-column: 1;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+.tx-btns {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  gap: 4px;
+}
+.tx-v {
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow: hidden;
+  color: #dbe7e3;
+  font: 12px var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.012em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tx-note {
+  grid-column: 1 / -1;
+  color: #7f8f96;
+  font-size: 11px;
+  line-height: 1.35;
+}
+.tx-copy,
+.tx-ext {
+  display: inline-grid;
+  place-items: center;
+  min-height: 22px;
+  min-width: 24px;
+  padding: 0 7px;
+  border: 1px solid #34433c;
+  border-radius: 7px;
+  background: #16201d;
+  color: var(--sage);
+  font: 600 11px var(--sans);
+  letter-spacing: -.005em;
+}
+.tx-ext {
+  padding: 0;
+  border-color: #3b4448;
+  color: var(--sand);
+  font-size: 12px;
+}
+
+/* next-steps · scoped to .ns
+   Ordered list with three circled numbers. */
+.ns {
+  --sage: #8fd9b6;
+  --sand: #cbbba6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ns;
+  min-width: 0;
+}
+.ns li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  min-width: 0;
+  padding: 7px 0;
+}
+.ns li + li { border-top: 1px solid #1d262a; }
+.ns li::before {
+  counter-increment: ns;
+  content: counter(ns);
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #3f5c50;
+  border-radius: 50%;
+  background: #141d1a;
+  color: var(--sage);
+  font: 600 11px var(--mono);
+  line-height: 1;
+}
+.ns strong {
+  display: block;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -.008em;
+}
+.ns p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.ns li:last-child::before { border-color: #4b4438; color: var(--sand); }
+
+/* provenance · scoped to .pv
+   Data source line + last-updated stamp. */
+.pv {
+  --sage: #8fd9b6;
+  --sand: #cbbba6;
+  min-width: 0;
+  padding: 9px 11px;
+  border: 1px solid #232c30;
+  border-left: 2px solid var(--sand);
+  border-radius: var(--r-xs);
+  background: #0f1417;
+}
+.pv dl {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  min-width: 0;
+}
+.pv dt {
+  color: #7d8c93;
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.pv dd {
+  margin: 0 0 5px;
+  min-width: 0;
+  color: #d7e3df;
+  font-size: 12px;
+  line-height: 1.45;
+  letter-spacing: -.005em;
+  overflow-wrap: anywhere;
+}
+.pv dd:last-child { margin-bottom: 0; color: var(--muted); }
+.pv .pv-mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.pv .pv-date { white-space: nowrap; }
+.pv .pv-sep { color: #5f6d73; padding: 0 2px; }
+.pv .pv-tag {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 1px 5px;
+  border: 1px solid #3c4a3f;
+  border-radius: 999px;
+  color: var(--sage);
+  font-size: 11px;
+  line-height: 1.35;
+  vertical-align: 1px;
+}
+
+/* recovery · scoped to .rc
+   What to check when a transaction fails, and who to ask. */
+.rc {
+  --sage: #8fd9b6;
+  --sand: #cbbba6;
+  min-width: 0;
+  padding: 10px 11px 11px;
+  border: 1px solid #2a2b2a;
+  border-radius: var(--r-sm);
+  background: linear-gradient(180deg, #131615, #101314);
+}
+.rc h2 {
+  margin: 0 0 6px;
+  color: var(--sand);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: -.006em;
+}
+.rc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.rc li {
+  display: grid;
+  grid-template-columns: 13px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+  min-width: 0;
+}
+.rc li svg {
+  width: 13px;
+  height: 13px;
+  margin-top: 1px;
+  stroke: #7f8f96;
+  stroke-width: 1.3;
+  fill: none;
+}
+.rc li p {
+  margin: 0;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.rc b {
+  color: #d6e2de;
+  font-weight: 600;
+}
+.rc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 9px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #3a4740;
+  border-radius: 8px;
+  background: #15201c;
+  color: var(--sage);
+  font: 600 11px var(--sans);
+  text-decoration: none;
+}
+.rc-link svg {
+  width: 11px;
+  height: 11px;
+  stroke: var(--sage);
+  stroke-width: 1.5;
+  fill: none;
+}
+.rc-note {
+  margin: 7px 0 0;
+  color: #74838a;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* privacy-strip · scoped to .ps
+   One line of separators, one quieter line under it. */
+.ps {
+  --sage: #8fd9b6;
+  --sand: #cbbba6;
+  min-width: 0;
+  padding: 9px 0 10px;
+  border-top: 1px solid #232c30;
+}
+.ps ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+.ps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: #cfdad7;
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: -.004em;
+  white-space: nowrap;
+}
+.ps li svg {
+  width: 11px;
+  height: 11px;
+  stroke: var(--sage);
+  stroke-width: 1.4;
+  fill: none;
+}
+.ps li + li::before {
+  content: "·";
+  padding: 0 5px;
+  color: #57656b;
+}
+.ps p {
+  margin: 5px 0 0;
+  color: #7b8a91;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.ps p .ps-k { color: var(--sand); }
+
+
+.to-row[hidden]{display:none!important}
+.tx-row.total{border-top:1px solid #2b3a34}
+.tx-row.total .tx-k,.tx-row.total .tx-v{color:var(--ink);font-weight:650}
+#tx-to,#tx-amount,#fee-total,#fee-network{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb.trust-badges{margin-top:10px}
+footer.ps{margin-top:14px}
