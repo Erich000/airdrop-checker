@@ -141,6 +141,50 @@
     built = true;
   }
 
+  /* 4b. metric counters: run once, when the strip is reached */
+  const nums = [...document.querySelectorAll(".metrics dt[data-to]")];
+  if (nums.length) {
+    let counted = false;
+    const fmt = (el, v) => {
+      const d = Number(el.dataset.decimals || 0);
+      const n = d ? v.toFixed(d) : Math.round(v).toLocaleString("en-US");
+      el.textContent = (el.dataset.prefix || "") + n + (el.dataset.suffix || "");
+    };
+    const runOne = (el) => {
+      const to = Number(el.dataset.to);
+      if (reduce) { el.textContent = el.dataset.final; return; }
+      const start = performance.now();
+      const dur = 1100;
+      const tick = (now) => {
+        const p = Math.min(1, (now - start) / dur);
+        fmt(el, to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = el.dataset.final;
+      };
+      el.textContent = (el.dataset.prefix || "") + "0" + (el.dataset.suffix || "");
+      requestAnimationFrame(tick);
+    };
+    const go = () => {
+      if (counted) return;
+      const box = nums[0].closest(".metrics");
+      if (!box) return;
+      if (box.getBoundingClientRect().top > innerHeight * 0.85) return;
+      counted = true;
+      nums.forEach(runOne);
+      removeEventListener("scroll", go);
+      removeEventListener("resize", go);
+    };
+    addEventListener("scroll", go, { passive: true });
+    addEventListener("resize", go);
+    const poll = setInterval(() => { go(); if (counted) clearInterval(poll); }, 400);
+    setTimeout(() => {
+      if (counted) return;
+      counted = true;
+      clearInterval(poll);
+      nums.forEach((el) => { el.textContent = el.dataset.final; });
+    }, 12000);
+  }
+
   /* 5. claim deadline countdown */
   const deadline = document.querySelector(".deadline[data-deadline]");
   const countdownText = $("countdown-text");
