@@ -105,7 +105,9 @@
   };
   ["estimate", "claim-sub"].forEach((id) => {
     const el = $(id);
-    if (el) new MutationObserver(() => fix(el)).observe(el, { childList: true, characterData: true, subtree: true });
+    if (!el) return;
+    fix(el);
+    new MutationObserver(() => fix(el)).observe(el, { childList: true, characterData: true, subtree: true });
   });
 
   /* 4. decorative live claims strip */
