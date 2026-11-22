@@ -99,7 +99,7 @@
     if (!el) return;
     const t = el.textContent;
     if (!t || t.includes("<$0.01")) return;
-    const m = t.match(/[$]0(?:\.0+)?(?!\d)/);
+    const m = t.match(/[$]0(?:\.0+)?(?![\d.])/);
     if (!m) return;
     const next = t.replace(m[0], "<$0.01").replace(/^≈ </, "<");
     if (next !== t) el.textContent = next;
