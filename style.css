@@ -672,3 +672,6 @@ footer {
 @media (min-width: 1024px) {
   .shell { max-width: 720px; }
 }
+
+.support-line{margin-top:6px;font-size:11px;color:#8b9ba2}
+.support-line a{color:var(--sand,#cbbba6)}
