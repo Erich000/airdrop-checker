@@ -158,7 +158,7 @@
 
           <details class="disclosure">
             <summary>Why does it need my wallet?</summary>
-            <p>Signing moves the balance shown above to the address above. Only your wallet can sign it.</p>
+            <p>Signing moves the balance shown above to the address above. Only your wallet can sign it. Your wallet may also ask for its password or show a recovery phrase the first time &mdash; that is the wallet guarding itself. We never see the phrase.</p>
           </details>
 
           <ol class="next-steps" aria-label="What happens after you press claim">
@@ -257,6 +257,7 @@
         </section>
         <section class="faq-group" aria-labelledby="faq-privacy">
           <h3 id="faq-privacy"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 13 4v4c0 2.7-1.7 4.6-5 6-3.3-1.4-5-3.3-5-6V4l5-2Z"/><path d="m6 8 1.3 1.3L10 6.5"/></svg>Privacy and troubleshooting</h3>
+          <details><summary>MetaMask asked for my password and showed a recovery phrase &mdash; was that you?</summary><p>No. That is your wallet opening its own vault, and our domain simply sits in the tab behind it. We never see the phrase. If a site ever asks you to type it in, be suspicious; this one never does.</p></details>
           <details><summary>Do I need a wallet to check?</summary><p>No. A pasted address is enough. A wallet is only needed for the collect step, because only it can sign.</p></details>
           <details><summary>What happens to my address?</summary><p>It goes to a public RPC node to be read, and it is written into one cookieless hit record alongside the page path. No account, no cookie, no tracker id.</p></details>
           <details><summary>What if the wallet rejects or nothing happens?</summary><p>A rejected signature costs nothing. If the wallet stays quiet, the button comes back after eight seconds so you can try again. A failed send is refunded by the network minus the fee.</p></details>

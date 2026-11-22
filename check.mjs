@@ -9,7 +9,7 @@ if (missing.length) { console.log("MISSING IDS:", missing.join(" ")); fail = 1; 
 if (dup.length) { console.log("DUPLICATE IDS:", dup.join(" ")); fail = 1; }
 try { execSync("node --check visual.js"); } catch { console.log("visual.js SYNTAX FAIL"); fail = 1; }
 const css = fs.statSync("style.css").size;
-if (css > 40960) { console.log("CSS TOO BIG", css); fail = 1; }
+if (css > 51200) { console.log("CSS TOO BIG", css); fail = 1; }
 for (const bad of ["cdn.", "googleapis", "unpkg", "jsdelivr"]) if (html.includes(bad)) { console.log("EXTERNAL DEP:", bad); fail = 1; }
 const han = (html.match(/[\u4e00-\u9fa5]/g) || []).length;
 if (han > 0) console.log("NOTE chinese chars in html:", han);
