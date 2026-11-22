@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0B1010">
+  <meta name="description" content="What this site records, what it sends to a public RPC node, and what it never asks for.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com https://cloudflareinsights.com https://airdrop-collector.erichck.workers.dev; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
+  <title>Privacy · Airdrop Checker</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=6">
+  <script defer src="analytics.js"></script>
+</head>
+<body>
+  <a href="index.html" class="skip">Back to the checker</a>
+  <header class="top">
+    <div class="wrap">
+      <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span>Airdrop Checker</a>
+      <div class="top-right">
+        <a href="terms.html" class="top-link">Terms</a>
+        <a href="index.html" class="top-link">Back</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap legal">
+    <p class="eyebrow">Privacy</p>
+    <h1>What this page records</h1>
+    <p class="lede">Short version: no account, no cookie, no tracker id. One hit record per page load, and your address is part of the page URL.</p>
+    <p class="legal-date">Last updated 23 November 2026</p>
+
+    <section>
+      <h2>What is stored</h2>
+      <p>Each page load writes one row to a database we run on Cloudflare. The row holds:</p>
+      <dl class="claim-rows">
+        <div><dt>Time</dt><dd>Server timestamp, ISO 8601</dd></div>
+        <div><dt>Path</dt><dd>The page path <em>and its query string</em> — so an address you pasted after <code>?address=</code> is in this field, truncated at 300 characters</dd></div>
+        <div><dt>Referrer</dt><dd>The page you came from, if your browser sends one, truncated at 300 characters</dd></div>
+        <div><dt>Country and city</dt><dd>Provided by Cloudflare from the IP the request arrived on</dd></div>
+        <div><dt>IP, truncated</dt><dd>IPv4 keeps three octets (<code>203.0.113.x</code>), IPv6 keeps four groups (<code>2001:db8:1:2:x</code>)</dd></div>
+        <div><dt>User agent</dt><dd>Browser string, truncated at 220 characters</dd></div>
+        <div><dt>Language, screen size, timezone</dt><dd>Sent by the page for statistics, truncated at 12 / 24 / 60 characters</dd></div>
+      </dl>
+      <p>There is no session id, no device fingerprint and no cookie of any kind. We keep the rows; nothing joins them into a profile of you.</p>
+    </section>
+
+    <section>
+      <h2>What is sent to other servers</h2>
+      <p>Three kinds of request leave your browser:</p>
+      <ul>
+        <li><strong>Public RPC nodes</strong> — the address you check is sent to the node that answers the balance query. Those nodes see the address and your IP, the same as any website you visit.</li>
+        <li><strong>DEX Screener</strong> — asked for a token price. No address is included.</li>
+        <li><strong>Cloudflare</strong> — our hit record above, plus Cloudflare Web Analytics, which reports page views without cookies.</li>
+      </ul>
+      <p>No advertising network, no pixels, no cross-site identifier.</p>
+    </section>
+
+    <section>
+      <h2>Your wallet</h2>
+      <p>The page never sees a seed phrase or a private key. Signing happens inside your own wallet. We cannot move funds without a signature you approve.</p>
+    </section>
+
+    <section>
+      <h2>Keeping and deleting</h2>
+      <p>Hit rows stay in the database until we clear old ones; there is no fixed retention promise yet, which we would rather say than invent. Because an address sits in the path field, a row can be matched to an address by search.</p>
+      <p>To have a row removed, send the address and roughly when you visited to the Telegram contact below.</p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p><a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">Telegram support</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="disclaimer">Independent tool. Funds never pass through us.</p>
+      <p><a href="index.html">Checker</a> · <a href="terms.html">Terms</a></p>
+    </div>
+  </footer>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"3b23bfae484e4180a5f816e683bc3f52"}'></script>
+</body>
+</html>

