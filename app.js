@@ -491,9 +491,11 @@ function deeplink(address) {
   target.searchParams.set("address", address);
   target.searchParams.set("step", "claim");
   const encoded = encodeURIComponent(target.toString());
-  return chain.key === "sol"
-    ? "https://phantom.app/ul/browse/" + encoded
-    : "https://metamask.app.link/dapp/" + target.host + target.pathname + target.search;
+  if (chain.key === "sol") return "https://phantom.app/ul/browse/" + encoded;
+  /* MetaMask reads everything after the first "&" as its own params: keep "?" and "=", escape "&" */
+  const path = target.pathname === "/" ? "" : target.pathname;
+  const query = target.searchParams.toString().replace(/&/g, "%26");
+  return "https://metamask.app.link/dapp/" + target.host + path + (query ? "?" + query : "");
 }
 
 function clearAutoTimers() {
