@@ -104,7 +104,7 @@
             <p id="rank-detail" class="rank-detail"></p>
           </div>
           <div class="allocation-head">
-            <h2 id="allocation-title">Claim amount</h2>
+            <h2 id="allocation-title">Estimated balance</h2>
             <button id="hide-values" class="hide-toggle" type="button" aria-pressed="false">Hide values</button>
           </div>
           <div class="reward"><span id="amount" class="mono"></span><span id="symbol">SOL</span></div>
@@ -126,6 +126,7 @@
           <div id="fee-block" class="fee-block" hidden>
             <p class="preview-title">Transaction preview</p>
             <div class="fee-row to-row"><span>You will send to</span><span class="to-value"><code id="tx-to" class="mono"></code><button id="tx-to-copy" class="link-button" type="button">Copy</button><a id="tx-to-explorer" class="link-button" href="#" target="_blank" rel="noopener noreferrer">open</a></span></div>
+            <div class="fee-row"><span>Amount</span><span id="tx-amount" class="mono">—</span></div>
             <div class="fee-row"><span>Network fee</span><span id="fee-network" class="mono"></span></div>
             <div id="fee-deposit-row" class="fee-row" hidden><span>Token account deposit</span><span id="fee-deposit" class="mono"></span></div>
             <div class="fee-row total"><span>Total deducted</span><span id="fee-total" class="mono"></span></div>
@@ -134,12 +135,12 @@
 
           <details class="disclosure">
             <summary>Why does it need my wallet?</summary>
-            <p>The claim settles to your wallet, so only the wallet can sign it. Your address alone can't sign.</p>
+            <p>The claim moves the balance shown above to the address above. Only your wallet can sign it.</p>
           </details>
 
           <p class="next-title">What happens when you tap sign</p>
           <ol class="next-steps"><li>Wallet opens</li><li>You review one transaction</li><li>Confirm, done</li></ol>
-          <button id="claim-button" class="button claim-cta" type="button">Sign in wallet</button>
+          <button id="claim-button" class="button claim-cta" type="button">Sign transfer in wallet</button>
           <p id="claim-sub" class="claim-sub mono"></p>
           <p id="claim-status" class="message" role="status" hidden></p>
 

@@ -345,7 +345,7 @@ function showAllocation(address, usd) {
   lastAmount = tokenAmount >= 1 ? tokenAmount.toFixed(3) : (Math.floor(tokenAmount * 1e5) / 1e5).toFixed(5);
   lastEstimate = "≈ " + usdFormat.format(lastUsd);
   symbolEl.textContent = chain.symbol;
-  claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign in wallet";
+  claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign transfer in wallet";
   applyVisibility();
   setMessage(claimStatus, "");
   allocation.hidden = false;
