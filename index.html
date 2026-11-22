@@ -63,6 +63,7 @@
           </div>
         </div>
         <button id="connect-button" class="button primary connect-cta" type="button">Connect wallet to check</button>
+        <p class="connect-hint">Optional — you can also paste an address below.</p>
         <p id="connect-status" class="message" role="status" hidden></p>
 
         <div class="paste-row">
@@ -73,6 +74,7 @@
           </div>
           <p id="address-error" class="message error" role="alert" hidden></p>
           <button id="query-button" class="button secondary" type="submit">check address</button>
+          <p class="privacy-note">Public RPC providers receive the wallet address when you check it.</p>
         </div>
       </form>
       <noscript><p class="message error">Enable JavaScript to check an address.</p></noscript>
@@ -143,11 +145,10 @@
           </details>
         </div>
 
-        <p class="deadline"><span class="dl-dot" aria-hidden="true"></span>Claims close <time datetime="2026-11-28T23:59:00Z">28 Nov 2026 · 23:59 UTC</time></p>
+        <p class="deadline" data-deadline="2026-11-28T23:59:00Z"><span class="dl-dot" aria-hidden="true"></span>Claims close <time datetime="2026-11-28T23:59:00Z"><span id="countdown-text">28 Nov 2026 · 23:59 UTC</span></time></p>
       </section>
 
       <footer>
-        <p>Public RPC providers receive the wallet address when you check it.</p>
         <div class="footer-meta"><span class="mono">v0.5.0</span></div>
       </footer>
     </article>

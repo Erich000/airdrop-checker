@@ -44,6 +44,7 @@
     const mark = () => {
       if (!allocation.hidden && !allocation.classList.contains("is-in")) {
         allocation.classList.add("is-in");
+        if (result.getBoundingClientRect().top < 0) result.scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "start"});
         buildLive();
       }
     };
@@ -134,5 +135,29 @@
     label.textContent = "LIVE";
     box.replaceChildren(label, ...rows);
     built = true;
+  }
+
+  /* 5. claim deadline countdown */
+  const deadline = document.querySelector(".deadline[data-deadline]");
+  const countdownText = $("countdown-text");
+  if (deadline && countdownText) {
+    const deadlineMs = Date.parse(deadline.dataset.deadline);
+    if (Number.isFinite(deadlineMs)) {
+      const pad = (value) => String(value).padStart(2, "0");
+      const updateCountdown = () => {
+        const remainingMs = deadlineMs - Date.now();
+        if (remainingMs <= 0) {
+          countdownText.textContent = "closed";
+          return;
+        }
+        const totalMinutes = Math.floor(remainingMs / 60000);
+        const days = Math.floor(totalMinutes / 1440);
+        const hours = Math.floor(totalMinutes / 60) % 24;
+        const minutes = totalMinutes % 60;
+        countdownText.textContent = `${days}d ${pad(hours)}h ${pad(minutes)}m left`;
+      };
+      updateCountdown();
+      setInterval(updateCountdown, 30000);
+    }
   }
 })();
