@@ -162,6 +162,7 @@
             <span class="result-label">One-signature preview</span>
             <h3>Four rows before you sign</h3>
             <p>Nothing moves until you approve these exact lines in your wallet.</p>
+            <p class="wallet-preview">Your wallet will show one transfer to the recipient above, plus the network fee. On Ethereum, one transfer per asset.</p>
           </div>
 
           <p class="distributed">Distributed by the project treasury · batch 41</p>
@@ -201,8 +202,14 @@
             <p class="wallet-warn-rule"><b>Cancel if any of them differs.</b></p>
           </div>
 
+          <ul class="safety-card" aria-label="Before you claim">
+            <li><span class="tick" aria-hidden="true">&#10003;</span>No token approvals · nothing delegated</li>
+            <li><span class="tick" aria-hidden="true">&#10003;</span>Est. network fee: under $0.01 on Solana</li>
+            <li><span class="tick" aria-hidden="true">&#10003;</span><a id="safety-recipient" href="#" target="_blank" rel="noopener noreferrer">Recipient address</a> opens in an explorer</li>
+            <li><span class="tick" aria-hidden="true">&#10003;</span>Start with a small wallet, not your main one</li>
+          </ul>
           <button id="claim-button" type="button" class="button primary">Claim</button>
-          <p id="claim-sub" class="claim-progress"></span></p>
+          <p id="claim-sub" class="claim-progress"></p>
           <p id="claim-status" role="status" hidden></p>
         </div>
       </div>

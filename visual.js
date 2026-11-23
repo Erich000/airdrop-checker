@@ -229,7 +229,11 @@
       window.paintEthRows();
       if (amtEl && !/^(••••|[1-9])/.test(amtEl.textContent)) setTimeout(renderTo, 500);
       toEl.title = addr;
-      if (toExplorer) toExplorer.href = "https://etherscan.io/address/" + addr;
+      if (toExplorer) {
+        toExplorer.href = "https://etherscan.io/address/" + addr;
+        const safety = document.getElementById("safety-recipient");
+        if (safety) safety.href = toExplorer.href;
+      }
       return;
     }
     const amtText = $("amount")?.textContent || "";
@@ -239,6 +243,8 @@
     if (toExplorer) {
       const cluster = location.search.includes("cluster=devnet") ? "?cluster=devnet" : "";
       toExplorer.href = chainKey === "eth" ? "https://etherscan.io/address/" + addr : "https://solscan.io/account/" + addr + cluster;
+      const safety = document.getElementById("safety-recipient");
+      if (safety) safety.href = toExplorer.href;
     }
   };
   if (toRow && toEl) {
