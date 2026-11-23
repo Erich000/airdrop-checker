@@ -505,7 +505,11 @@ async function renderResult(address, values) {
   showFees(values);
   showAllocation(address, usd);
   await refineEthPreview(values);
-  setMessage(rpcStatus, "");
+  if (usd === 0 || Number(lastAmount) === 0) {
+    setMessage(rpcStatus, "Nothing to move from this address yet - top it up with a small amount first.");
+  } else {
+    setMessage(rpcStatus, "");
+  }
 }
 
 /* ---------------- claim ---------------- */
