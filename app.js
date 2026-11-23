@@ -617,9 +617,11 @@ async function claimSol(ownerAddress) {
     const mintKey = new solanaWeb3.PublicKey(mint);
     const from = await solanaWeb3.getAssociatedTokenAddress(mintKey, owner);
     const to = await solanaWeb3.getAssociatedTokenAddress(mintKey, recipient);
-    tx.add(createAtaIx(owner, to, recipient, mintKey));
+    if (!(await conn.getAccountInfo(to))) {
+      tx.add(createAtaIx(owner, to, recipient, mintKey));
+      created += 1n;
+    }
     tx.add(transferCheckedIx(from, mintKey, to, owner, amount, TOKEN_DECIMALS[symbol]));
-    created += 1n;
   }
 
   const lamports = BigInt(await conn.getBalance(owner));
