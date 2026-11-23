@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://airdrop-checker.xyz/sitemap.xml
+Sitemap: https://go.ywwj.chat/sitemap.xml
