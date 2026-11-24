@@ -1958,7 +1958,7 @@ footer a:hover {
   }
 
   .walkthrough-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
@@ -2002,6 +2002,7 @@ footer a:hover {
 .message a{color:var(--sage);text-decoration:underline;word-break:break-all;overflow-wrap:anywhere}
 .claim-progress{min-height:20px}
 .distributed{margin:10px 0 4px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.distributed a{color:var(--sage);text-decoration:underline;text-underline-offset:2px}
 
 .wallet-preview{margin:6px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .safety-card{display:grid;gap:6px;margin:12px 0;padding:10px 12px;border:1px solid #2b3a33;border-radius:9px;background:#0e1512;list-style:none}

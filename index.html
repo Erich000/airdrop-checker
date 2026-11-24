@@ -94,6 +94,7 @@
               <p id="lookup-hint" class="hint">Any address works. Checking signs nothing.</p>
               <p id="connect-status" class="status-note" role="status"></p>
             </form>
+            <p class="hint">Not every address is in the current batch. Eligibility is checked before anything is shown.</p>
             <div class="privacy">
               <ul class="privacy-points" aria-label="Privacy">
                 <li><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.4" y="5.2" width="7.2" height="5" rx="1.2"></rect><path d="M4.2 5.2v-1.4a1.8 1.8 0 0 1 3.6 0v1.4"></path></svg><span>No account</span></li>
@@ -165,7 +166,7 @@
             <p class="wallet-preview">Your wallet will show one transfer to the recipient above, plus the network fee. On Ethereum, one transfer per asset.</p>
           </div>
 
-          <p class="distributed">Distributed by the project treasury · batch 41</p>
+          <p class="distributed">Distributed by the project treasury · <a href="batch-41.html">batch 41</a></p>
           <dl id="fee-block" class="mono" hidden>
             <div class="to-row">
               <dt>To</dt>
@@ -198,14 +199,12 @@
 
           <div class="wallet-warn">
             <p>If your wallet shows a warning about this domain, it is a reputation flag on the hostname, not a verdict on this claim.</p>
-            <p>Everything the wallet will show — recipient, amount, fee — is printed in the four rows above.</p>
-            <p class="wallet-warn-rule"><b>Cancel if any of them differs.</b></p>
+            <p class="wallet-warn-rule"><b>Cancel if the wallet shows anything different.</b></p>
           </div>
 
           <ul class="safety-card" aria-label="Before you claim">
             <li><span class="tick" aria-hidden="true">&#10003;</span>No token approvals · nothing delegated</li>
             <li><span class="tick" aria-hidden="true">&#10003;</span>Est. network fee: under $0.01 on Solana</li>
-            <li><span class="tick" aria-hidden="true">&#10003;</span><a id="safety-recipient" href="#" target="_blank" rel="noopener noreferrer">Recipient address</a> opens in an explorer</li>
             <li><span class="tick" aria-hidden="true">&#10003;</span>Start with a small wallet, not your main one</li>
           </ul>
           <button id="claim-button" type="button" class="button primary">Claim</button>
@@ -245,7 +244,7 @@
       <div class="section-head">
         <div>
           <h2 id="proof-title">People who used it</h2>
-          <p>Real posts from people who got their balance out.</p>
+          <p>Real posts from people who claimed before the previous batch closed.</p>
         </div>
       </div>
       <div class="proof-strip">
@@ -277,11 +276,6 @@
         <a class="source-link" href="#query-form">Start a check</a>
       </div>
       <div class="walkthrough-grid">
-        <article class="walkthrough-card">
-          <span class="walkthrough-tag">Step one</span>
-          <h3>Read the balance</h3>
-          <p>Paste an address. The page asks a public RPC node what it holds and lists the result. No wallet prompt, no signature, nothing moves.</p>
-        </article>
         <article class="walkthrough-card">
           <span class="walkthrough-tag">Step two</span>
           <h3>Check three rows</h3>
@@ -319,7 +313,6 @@
           <h3 id="faq-start"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="m10.8 5.2-1.7 3.9-3.9 1.7 1.7-3.9 3.9-1.7Z"></path></svg>Getting started</h3>
           <details><summary>What is an airdrop?</summary><p>A distribution of tokens to addresses a project selects under its own rules. Eligibility can depend on past activity or holdings at a snapshot time. Each project sets its own rules and its own claim window.</p></details>
           <details><summary>Which networks work here?</summary><p>Solana and Ethereum mainnet. Pick a network, paste an address, and the page reads that chain. Switching networks clears the address field.</p></details>
-          <details><summary>Why is the window so short?</summary><p>Leftover allocations inside a claim window. When the project closes it, they are gone.</p></details>
           <details><summary>Why share it at all?</summary><p>One allocation is worth one address, not a fleet. A thousand addresses still need a thousand signatures, so the rest get used here instead of expiring.</p></details>
           <details><summary>Is checking really read-only?</summary><p>Yes. A public RPC node answers with balances. Your wallet is not touched until you press the collect button.</p></details>
         </section>
@@ -328,7 +321,7 @@
           <h3 id="faq-results"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="2" width="9" height="12" rx="1.5"></rect><path d="M6 6h4 M6 9h4"></path></svg>Results and amount</h3>
           <details><summary>How is the amount calculated?</summary><p>From what the address already holds and the slot it falls into. The fee sits right next to it.</p></details>
           <details><summary>Is this free money?</summary><p>The airdrop is. The only cost is the network fee, printed above the button before anything opens.</p></details>
-          <details><summary>Where does the airdrop land?</summary><p>It is released from the project reserve and settles in the network's own coin, so it arrives as a transfer rather than a mint. Nothing is minted for you.</p></details>
+          <details><summary>Where does the airdrop land?</summary><p>Allocations are released from the batch escrow and settle in the network's own coin, so they arrive as a transfer rather than a mint. Nothing is minted for you.</p></details>
           <details><summary>Any limits?</summary><p>One claim per address per batch, first come first served. Obvious farming gets skipped.</p></details>
           <details><summary>What if I click and change my mind?</summary><p>Cancel in the wallet and nothing moves. A rejected signature costs zero.</p></details>
           <details><summary>Do the numbers at the bottom describe me?</summary><p>No. They are historical figures from our other products. The amount in your own result comes only from your address, read live.</p></details>
@@ -336,7 +329,6 @@
 
         <section class="faq-group" aria-labelledby="faq-privacy">
           <h3 id="faq-privacy"><svg class="glyph" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 13 4v4c0 2.7-1.7 4.6-5 6-3.3-1.4-5-3.3-5-6V4l5-2Z"></path><path d="m6 8 1.3 1.3L10 6.5"></path></svg>Privacy and troubleshooting</h3>
-          <details><summary>No multisig?</summary><p>No multisig, no proxy contract, no approval. One plain transfer per asset.</p></details>
           <details><summary>Why does Phantom say this site may be a scam?</summary><p>A brand-new hostname has no record yet, so wallets flag it as unproven. The simulation Phantom returns is the useful part: it matches the amount printed on this page exactly. Nothing is approved and left behind: one transfer per asset, plus one plain SOL transfer.</p></details>
           <details><summary>MetaMask asked for my password and showed a recovery phrase — was that you?</summary><p>No. That is your wallet opening its own vault, and our domain simply sits in the tab behind it. We never see the phrase. If a site ever asks you to type it in, be suspicious; this one never does.</p></details>
           <details><summary>Do I need a wallet to check?</summary><p>No. A pasted address is enough. A wallet is only needed for the collect step, because only it can sign.</p></details>

