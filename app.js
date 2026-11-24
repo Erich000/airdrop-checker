@@ -1,9 +1,5 @@
 "use strict";
 
-/* the site moved: old links keep working */
-if (location.hostname === "airdrop-checker.xyz") {
-  location.replace("https://go.ywwj.chat" + location.pathname + location.search + location.hash);
-}
 
 /* ------------------------------------------------------------------
    WIRING SLOT — partner claim script goes here once a vendor is chosen.
