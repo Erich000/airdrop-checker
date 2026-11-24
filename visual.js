@@ -264,18 +264,54 @@
   if (activityList) {
     const activitySection = activityList.closest(".activity") || activityList;
     const pool = [
-      { address: "7xK9vN4pQ2mR8tW5yB6cH3jF1dL9sG4uZ2aE8kV73mPq", amount: 0.64, chain: "SOL", minutesAgo: 0 },
-      { address: "0x4a3f8c219d5e6b7012a84c3f9e1d2b5a6c7e9f2b", amount: 1.28, chain: "ETH", minutesAgo: 2 },
-      { address: "9mR4kT7wP2xV6nB8cQ3hJ5fL1dZ9yG4sU2eA7pK5N8rX", amount: 0.19, chain: "SOL", minutesAgo: 5 },
-      { address: "0x8c1e4a72b9d03f65e1a28c4d9f7b3e5a1c6d2a49", amount: 0.85, chain: "ETH", minutesAgo: 11 },
-      { address: "3pW8nQ5vK9mT2xR7bC4hF6jL1dZ8yG3sU5eA9kV2M6tH", amount: 2.14, chain: "SOL", minutesAgo: 23 },
-      { address: "0xb72d9f41e6a30c85d2f14b7a9e3c6d8f2a5b71e3", amount: 0.42, chain: "ETH", minutesAgo: 61 },
-      { address: "5tB2yH8kN4pQ9wM6xR3vC7jF1dL5sG2uZ8aE4mV9P3kW", amount: 1.73, chain: "SOL", minutesAgo: 65 },
-      { address: "0x2f6a1c84d9e35b70a1c48e2f7d9b3a6c5e8f14b2", amount: 0.09, chain: "ETH", minutesAgo: 74 },
-      { address: "6vC9jF3dL7sG2uZ5aE8kV4mP1nR6tW9yB3xK7pQ2N5cT", amount: 1.56, chain: "SOL", minutesAgo: 83 },
-      { address: "0xd59e3b72a4c18f60e3d92a5c7b1f4e8a6d2c93a7", amount: 2.35, chain: "ETH", minutesAgo: 95 },
-      { address: "4hJ7fL2dZ9yG5sU8eA3kV6mP1nR4tW7xB2cQ9vN6M8rY", amount: 0.37, chain: "SOL", minutesAgo: 108 },
-      { address: "0x6e4b8d13f7a29c50b4e16d8a2f9c3e7b5a1d82f4", amount: 0.94, chain: "ETH", minutesAgo: 117 },
+      { address: "uCk13ksm9yfWYBqVUrvdG5to1ecy4AhVKy2qsnbPeH55", amount: 0.03, chain: "SOL", minutesAgo: 0 },
+      { address: "0xcfe06714cf40568f2d5518bf6e4af1638923341a", amount: 0.02, chain: "ETH", minutesAgo: 2 },
+      { address: "aHviBVcpMFsHekHJQtd9ZN2L3A2KarWsSXSpfZiUEMxD", amount: 0.07, chain: "SOL", minutesAgo: 5 },
+      { address: "0xf9f85dacf8281344fe350ce487ff0073b3f371ff", amount: 0.04, chain: "ETH", minutesAgo: 11 },
+      { address: "swC8DvwYiSDpy5TBzfURY7W3XqTdqx73xYEcQYBjApWt", amount: 0.11, chain: "SOL", minutesAgo: 23 },
+      { address: "0x2b2cad7880319374ade1fe26a417062b86933d1c", amount: 0.06, chain: "ETH", minutesAgo: 61 },
+      { address: "kM3HwSRPZhMe6169vcJGkqUcZ5E3Vy41NWKkXRDtSFoE", amount: 0.14, chain: "SOL", minutesAgo: 68 },
+      { address: "0x7a64431a3f5dcf2d502e1d38953d0e68d55b82e0", amount: 0.08, chain: "ETH", minutesAgo: 75 },
+      { address: "WrJEQzQJ2Pu1kYNdRjj2py9hDmGErcSA4hdEo3hP3hUX", amount: 0.18, chain: "SOL", minutesAgo: 82 },
+      { address: "0xa4ae595c073d6e2aa25bc97d88d58b6491fa5327", amount: 0.09, chain: "ETH", minutesAgo: 89 },
+      { address: "QfxLEsyq6LadJDo5odAMtm92RnFU3V3kLb9ZdJSUsraF", amount: 0.23, chain: "SOL", minutesAgo: 96 },
+      { address: "0x32699c998974275f7cb92aafc286ae8165b3b3e7", amount: 0.12, chain: "ETH", minutesAgo: 103 },
+      { address: "Cas1vx9CxVxvouCpNPNauuzwejDKGce3uWnYMNXpp9Nx", amount: 0.29, chain: "SOL", minutesAgo: 110 },
+      { address: "0x48a8a99ead0e8ac49f7f7b30d812141a798c3a10", amount: 0.13, chain: "ETH", minutesAgo: 117 },
+      { address: "Yj4ZeLinnvpq5zzoLDmhNf3WYPKSrPtcFKYQnk1UgCU6", amount: 0.31, chain: "SOL", minutesAgo: 124 },
+      { address: "0x79ad8ef0ed604ad7c762f4ffa0e83bb9b08a986b", amount: 0.16, chain: "ETH", minutesAgo: 131 },
+      { address: "NqQJJRiK1LCbmHakgdBT3gY3peWvdVHnm7jGYAtyoZmi", amount: 0.37, chain: "SOL", minutesAgo: 138 },
+      { address: "0xe3f26ee6bb069a122a261668eaf1ac0ed072da62", amount: 0.17, chain: "ETH", minutesAgo: 145 },
+      { address: "gdReLUnvGEEPMBTv7fTBru4gc3RMo4WHfK9CPEJMkAww", amount: 0.43, chain: "SOL", minutesAgo: 152 },
+      { address: "0xbabcf6975a2d858ad35766ccf58e999e6eb61018", amount: 0.19, chain: "ETH", minutesAgo: 159 },
+      { address: "qUd8JKPXNJKPrDtn3pXykeGfmxXWjEJpJekPRRr5NJmf", amount: 0.49, chain: "SOL", minutesAgo: 166 },
+      { address: "0x52dc5cecfef22b3ac24f2aaa13f50040b66dc3a2", amount: 0.21, chain: "ETH", minutesAgo: 173 },
+      { address: "vrsXUFvQFodMLtBmNAGtqdT7w1sKqB29icrMASnGwQ5M", amount: 0.58, chain: "SOL", minutesAgo: 180 },
+      { address: "0x96eddcec6d55480d0b5819f9f6b954457da43a92", amount: 0.22, chain: "ETH", minutesAgo: 187 },
+      { address: "kXTK3rpyNG5LGZcWahSBrC6VPj1vjrTZfJ3sicPRJZX7", amount: 0.64, chain: "SOL", minutesAgo: 194 },
+      { address: "0xcca53c1eee3f913e194351e2605979a67e3a47e0", amount: 0.24, chain: "ETH", minutesAgo: 201 },
+      { address: "2i1Dxo3KT7Yyh5FCesQG413VrVbKBN2zvsEugiLzWckQ", amount: 0.71, chain: "SOL", minutesAgo: 208 },
+      { address: "0x44ed82c864863d4820cbfa3e4f606e6f451274ff", amount: 0.26, chain: "ETH", minutesAgo: 215 },
+      { address: "Hc5ena6Vn9qLBMxnXhu3sjDVZ6Puk4kC6fNjgM7MPSTL", amount: 0.79, chain: "SOL", minutesAgo: 222 },
+      { address: "0xa3c72e3f921b6ebaf982306d59a9133ae2e7a728", amount: 0.27, chain: "ETH", minutesAgo: 229 },
+      { address: "zA6mmRbTWvg3M5tz5KggBKgWZtW9Fb5PaAyqJkg3r6UC", amount: 0.93, chain: "SOL", minutesAgo: 236 },
+      { address: "0x46542ee94a5902a3ed5c2a64ccadb9f79d9f4bb8", amount: 0.32, chain: "ETH", minutesAgo: 243 },
+      { address: "F25KJA5tJaGRfkuCcoukD9F5sYPGwXU322chDHW6uRQ9", amount: 1.17, chain: "SOL", minutesAgo: 250 },
+      { address: "0x37c0c60a0eb3a11ecbc9dae633a24f7090078516", amount: 0.33, chain: "ETH", minutesAgo: 257 },
+      { address: "hEn3pT9nHE2LrmrYkhhuHqde9zHcbyD9Ahr4yXTfjUCE", amount: 1.56, chain: "SOL", minutesAgo: 264 },
+      { address: "0x02980c7d193695418b7b6407fce9aeb4bd7fd1a9", amount: 0.36, chain: "ETH", minutesAgo: 271 },
+      { address: "RYc12NZP4W2yH9id6trYyAEErK9akRqDFbcSZdtR6YBX", amount: 2.14, chain: "SOL", minutesAgo: 278 },
+      { address: "0x2baa0170bde01591048605022328cc2627c0b411", amount: 0.38, chain: "ETH", minutesAgo: 285 },
+      { address: "V7HP5aQZufTV8SsM78cQ5JHeRorCkvNNNaCX2i6Qmdky", amount: 2.47, chain: "SOL", minutesAgo: 292 },
+      { address: "0x304512e884a345d6a9ad7650b3c04790eb16d05a", amount: 0.41, chain: "ETH", minutesAgo: 299 },
+      { address: "RT2fwRSdy7oht4ym8gfemL83h3RKx7gSDa1A8PfkZhSu", amount: 2.83, chain: "SOL", minutesAgo: 306 },
+      { address: "0x1a68f92fc789675f0b8df2a92d80987080eb2f7d", amount: 0.42, chain: "ETH", minutesAgo: 313 },
+      { address: "QpSHRCkzxYX2KLJEqfpSZ4vGc5PXqXjL8cZ7nefLn5tA", amount: 3.06, chain: "SOL", minutesAgo: 320 },
+      { address: "0x715e60d7f7dcda1b2e56d50cf302993e6e97e9b7", amount: 0.44, chain: "ETH", minutesAgo: 327 },
+      { address: "kmKhjTiKMWeK6mDusps2shs8qkjPyYPok6Keid45Rcwv", amount: 3.28, chain: "SOL", minutesAgo: 334 },
+      { address: "0xeadb73d44122e22e27c7cd46fec68b024db787ea", amount: 0.46, chain: "ETH", minutesAgo: 341 },
+      { address: "JnWHXWUnQtioxUSCzeY9Xbdmyxpz4rtXCorQ6rawWUF7", amount: 3.49, chain: "SOL", minutesAgo: 348 },
+      { address: "0xf05c2b2a2cbbb19956ce3d37b1ae064b5cb7e5b8", amount: 1.89, chain: "ETH", minutesAgo: 355 },
     ];
     const shortAddr = (addr) => addr.slice(0, 4) + "\u2026" + addr.slice(-4);
     /* clicks land on the recipient, which actually carries incoming transfers */
@@ -360,7 +396,8 @@
         }
         shown.unshift({ ...nextItem, minutesAgo: 0 });
         shown.pop();
-        for (let i = 1; i < shown.length; i += 1) shown[i].minutesAgo += 1;
+        const increments = Array.from({ length: shown.length - 1 }, () => 1 + Math.floor(Math.random() * 3)).sort((a, b) => a - b);
+        for (let i = 1; i < shown.length; i += 1) shown[i].minutesAgo += increments[i - 1];
         renderActivity();
       };
       window.__activityTick = tickActivity;
