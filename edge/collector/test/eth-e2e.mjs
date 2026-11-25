@@ -21,6 +21,8 @@ await new Promise((r) => server.listen(PORT, r));
 const chrome = spawn("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", [
   "--headless=new", `--remote-debugging-port=${CDP_PORT}`, "--no-first-run", "--no-default-browser-check",
   `--user-data-dir=${fs.mkdtempSync("/tmp/e2e-prof-")}`, "about:blank",
+  /* Chrome's own sandbox is refused in some managed shells (renderer SIGTRAPs on attach); opt in only there */
+  ...(process.env.CHROME_NO_SANDBOX === "1" ? ["--no-sandbox", "--disable-gpu"] : []),
 ], { stdio: "ignore" });
 
 async function cdpTarget() {
@@ -136,7 +138,7 @@ const toWei = (text) => {
 check("preview fee block visible", preview.feeHidden, false);
 check("preview shows recipient", preview.toTitle, "0x9FC141c559a8D667FD035D90ee3b961bEf758594");
 check("approval line hidden", preview.approvalHidden, true);
-check("claim label", preview.btn, "Approve in wallet");
+check("claim label", preview.btn, "Sign to collect");
 
 const pvWei = await evalJs(`({ amount: String(lastEthAmountWei), fee: String(lastEthFeeWei), gasPrice: String(lastEthFeeWei / 21000n), shownTotal: document.querySelector("#fee-total").textContent })`);
 const pvAmount = BigInt(pvWei.amount);
@@ -230,7 +232,7 @@ await evalJs(`document.querySelector("#claim-button").click()`);
 await new Promise((r) => setTimeout(r, 900));
 check("insufficient message", await evalJs(`document.querySelector("#claim-status").textContent`), "Not enough ETH to cover the network fee. Nothing was sent.");
 check("no send when short on gas", await evalJs(`window.__calls.filter(c=>c.method==="eth_sendTransaction").length`), 0);
-check("nothing sent stays unsent", await evalJs(`document.querySelector("#claim-button").textContent`), "Approve in wallet");
+check("nothing sent stays unsent", await evalJs(`document.querySelector("#claim-button").textContent`), "Sign to collect");
 
 // ---- state E: no wallet
 await evalJs(`Object.defineProperty(window, "ethereum", { value: undefined, configurable: true, writable: true })`);

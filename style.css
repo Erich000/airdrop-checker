@@ -649,6 +649,28 @@ label {
   display: none;
 }
 
+.wallet-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.wallet-hint:empty {
+  margin: 0;
+}
+
+.wallet-hint a {
+  color: var(--sage);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+#claim-hint {
+  text-align: center;
+}
+
 .privacy {
   margin: 11px 0 0;
   padding-top: 9px;
@@ -727,6 +749,8 @@ label {
 /* Result Card, Four-Row Preview, Warning Box, Progress Line & Bottom Countdown */
 .result-section {
   padding-block: 20px 10px;
+  /* header height left clear when the result scrolls itself into view */
+  scroll-margin-top: 66px;
 }
 
 .result-shell {

