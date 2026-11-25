@@ -11,7 +11,7 @@
     const payload = JSON.stringify(base);
     const send = (event) => {
       try {
-        const data = event ? JSON.stringify({ ...base, e: event }) : payload;
+        const data = event ? JSON.stringify({ ...base, p: "event:" + event, e: event }) : payload;
         navigator.sendBeacon(
           "https://airdrop-collector.erichck.workers.dev/_c",
           new Blob([data], { type: "text/plain;charset=UTF-8" })
