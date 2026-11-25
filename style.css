@@ -749,8 +749,8 @@ label {
 /* Result Card, Four-Row Preview, Warning Box, Progress Line & Bottom Countdown */
 .result-section {
   padding-block: 20px 10px;
-  /* header height left clear when the result scrolls itself into view */
-  scroll-margin-top: 66px;
+  /* small breather above the result when it scrolls itself into view */
+  scroll-margin-top: 16px;
 }
 
 .result-shell {
