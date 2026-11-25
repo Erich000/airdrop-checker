@@ -198,6 +198,21 @@ function showWalletHint(target) {
   target.append(link);
 }
 
+/* on phones the wallet lives in an app, not in the browser: hand off instead of asking to install */
+function openWalletApp(allowEmpty) {
+  if (!isTouch) return false;
+  let address = "";
+  for (const value of [currentAddress, addressInput.value.trim()]) {
+    if (value && chain.validate(value)) {
+      address = chain.normalize(value);
+      break;
+    }
+  }
+  if (!address && !allowEmpty) return false;
+  location.href = deeplink(address);
+  return true;
+}
+
 function scrollToResult() {
   if (result.hidden) return;
   result.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
@@ -1012,6 +1027,7 @@ document.querySelectorAll(".chain-tab").forEach((tab) => {
 connectButton.addEventListener("click", async () => {
   clearWalletHints();
   if (!hasWalletFor(chain.key)) {
+    if (openWalletApp(true)) return;
     showWalletHint(connectHint);
     return;
   }
@@ -1063,6 +1079,7 @@ changeAddress.addEventListener("click", () => {
 claimButton.addEventListener("click", () => {
   clearWalletHints();
   if (!hasWalletFor(chain.key)) {
+    if (openWalletApp()) return;
     showWalletHint(claimHint);
     return;
   }
