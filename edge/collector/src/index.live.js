@@ -67,7 +67,8 @@ var src_default = {
     const ip = req.headers.get("cf-connecting-ip") || "";
     const ipPart = ip.includes(":") ? ip.split(":").slice(0, 4).join(":") : ip.split(".").slice(0, 3).join(".");
     const ua = (req.headers.get("user-agent") || "").slice(0, 220);
-    if (b.e) {
+    const ev = b.e || b.ev;
+    if (ev) {
       try {
         await ready;
         const dwell = Number.parseInt(b.d, 10);
@@ -77,11 +78,11 @@ var src_default = {
         ).bind(
           (/* @__PURE__ */ new Date()).toISOString(),
           String(b.sid || "").slice(0, 100),
-          String(b.e || "").slice(0, 60),
+          String(ev).slice(0, 60),
           String(b.p || "").slice(0, 300),
           cf.country || "",
           String(b.m || "").slice(0, 300),
-          b.e === "dwell" && Number.isFinite(dwell) ? dwell : null
+          ev === "dwell" && Number.isFinite(dwell) ? dwell : null
         ).run();
       } catch {
       }
