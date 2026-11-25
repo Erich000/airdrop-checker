@@ -9,16 +9,15 @@ h1{font:600 14px ui-sans-serif;letter-spacing:.14em;text-transform:uppercase;col
 table{border-collapse:collapse;width:100%;margin:12px 0 26px}td,th{border-bottom:1px solid #26332e;padding:5px 8px;text-align:left}
 th{color:#8b9ba2;font-weight:500;text-transform:uppercase;font-size:10.5px;letter-spacing:.08em}
 </style><h1>airdrop-checker \xB7 hits</h1>${rows}`, "PAGE");
-let eventsReady;
-const ensureEvents = (env) => {
-  if (!eventsReady) {
-    eventsReady = env.DB.prepare(
-      `create table if not exists events (
+let eventsReady = false;
+const ensureEvents = async (env) => {
+  if (eventsReady) return;
+  await env.DB.prepare(
+    `create table if not exists events (
         ts text, sid text, ev text, path text, country text, meta text, dwell integer
       )`
-    ).run();
-  }
-  return eventsReady;
+  ).run();
+  eventsReady = true;
 };
 var src_default = {
   async fetch(req, env) {
